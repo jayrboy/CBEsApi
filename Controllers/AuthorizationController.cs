@@ -10,7 +10,7 @@ using CBEsApi.Models;
 namespace CBEsApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class AuthorizationController : ControllerBase
 {
     private readonly ILogger<AuthorizationController> _logger;
@@ -46,26 +46,21 @@ public class AuthorizationController : ControllerBase
     /// Sample request:
     /// 
     ///     POST /GenerateToken
+    ///     
     ///     {
-    ///         "id": 0,
-    ///         "username": "string",
-    ///         "password": "string",
-    ///         "role": "admin",
-    ///         "createDate": "2024-05-27T15:02:54.076Z",
-    ///         "updateDate": "2024-05-27T15:02:54.076Z",
-    ///         "isDelete": true
+    ///         "username": "string"
     ///     }
     ///     
     /// </remarks>
-    [HttpPost("token", Name = "GenerateToken")]
-    public string GenerateToken([FromBody] CbesUser user)
+    [HttpPost("/GenerateToken", Name = "GenerateToken")]
+    public string GenerateToken([FromBody] string username)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(TokenSecret);
 
         var claims = new List<Claim>
             {
-            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Name, username),
             // Add more claims as needed
             };
 
@@ -85,6 +80,7 @@ public class AuthorizationController : ControllerBase
             var jwt = tokenHandler.WriteToken(token);
             return jwt;
         }
+
         else
         {
             return "Failed to write token.";
@@ -105,7 +101,7 @@ public class AuthorizationController : ControllerBase
 
         try
         {
-            bearerToken = GenerateToken(user);
+            bearerToken = GenerateToken(user.Username);
         }
         catch
         {
