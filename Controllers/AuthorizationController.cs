@@ -35,6 +35,7 @@ public class AuthorizationController : ControllerBase
 
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
+        public string? Fullname { get; set; }
 
         public string? Role { get; set; }
     }
@@ -53,14 +54,14 @@ public class AuthorizationController : ControllerBase
     ///     
     /// </remarks>
     [HttpPost("/GenerateToken", Name = "GenerateToken")]
-    public string GenerateToken([FromBody] string username)
+    public string GenerateToken([FromBody] CbesUser user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(TokenSecret);
 
         var claims = new List<Claim>
             {
-            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Name, user.Username),
             // Add more claims as needed
             };
 
@@ -101,7 +102,7 @@ public class AuthorizationController : ControllerBase
 
         try
         {
-            bearerToken = GenerateToken(user.Username);
+            bearerToken = GenerateToken(user);
         }
         catch
         {
@@ -127,16 +128,13 @@ public class AuthorizationController : ControllerBase
     [HttpPost("Register", Name = "Register")]
     public ActionResult<Response> Register(RegisterCreate registerCreate)
     {
-        if (registerCreate.Role.IsNullOrEmpty())
-        {
-            registerCreate.Role = "user";
-        }
-
         CbesUser user = new CbesUser
         {
             Username = registerCreate.Username,
             Password = registerCreate.Password,
+            Fullname = registerCreate.Fullname,
         };
+
 
         try
         {
@@ -153,19 +151,12 @@ public class AuthorizationController : ControllerBase
             });
         }
 
-        return user.Username == null || user.Password == null
-            ? BadRequest(new Response
-            {
-                Status = 400,
-                Message = "Bad Request",
-                Data = null
-            })
-            : Ok(new Response
-            {
-                Status = 201,
-                Message = "Created Successfully",
-                Data = user
-            });
+        return Ok(new Response
+        {
+            Status = 201,
+            Message = "Created Successfully",
+            Data = user
+        });
     }
 
 

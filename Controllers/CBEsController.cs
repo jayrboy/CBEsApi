@@ -11,14 +11,18 @@ namespace CBEsApi.Controllers
         /// Get All CBEs
         /// </summary>
         [HttpGet(Name = "GetCBEs")]
-        public ActionResult<Response> GetCBEs(List<Cbe> cbe)
+        public ActionResult GetCBEs()
         {
-            return Ok(new Response
-            {
-                Status = 200,
-                Message = "Success",
-                Data = cbe
-            });
+            List<Cbe> data = new List<Cbe>();
+
+            return Ok(data);
+
+            // return Ok(new Response
+            // {
+            //     Status = 200,
+            //     Message = "Success",
+            //     Data = cbe
+            // });
         }
 
         /// <summary>
