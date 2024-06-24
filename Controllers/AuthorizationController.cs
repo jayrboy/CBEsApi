@@ -29,7 +29,7 @@ public class AuthorizationController : ControllerBase
 
     public struct RegisterCreate
     {
-        [Required(ErrorMessage = "User Name is required")]
+        [Required(ErrorMessage = "Username is required")]
         [RegularExpression(@"^[a-zA-Z0-9]*$")]
         public string? Username { get; set; }
 
