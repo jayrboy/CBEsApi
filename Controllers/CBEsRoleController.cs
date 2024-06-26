@@ -78,14 +78,29 @@ namespace CBEsApi.Controllers
         }
 
         [HttpDelete("{id}", Name = "DeleteRole")]
-        public ActionResult<Response> DeleteRole(int id)
+        public ActionResult DeleteRole(int id)
         {
-            return Ok(new Response
+            try
             {
-                Status = 201,
-                Message = "Role Saved",
-                Data = id
-            });
+                CbesRole cbe = CbesRole.Delete(_db, id);
+
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbe
+                });
+            }
+            catch
+            {
+                // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "User not found",
+                    Data = null
+                });
+            }
         }
 
         [HttpPost("users", Name = "PostUserWithRole")]
@@ -102,7 +117,8 @@ namespace CBEsApi.Controllers
         [HttpGet("users", Name = "GetUserWithRole")]
         public ActionResult<Response> GetUserWithRole()
         {
-            List<CbesUserWithRole> usersWithRole = new List<CbesUserWithRole>();
+            List<CbesUserWithRole> usersWithRole = CbesUserWithRole.GetAll(_db);
+
             return Ok(new Response
             {
                 Status = 200,
@@ -114,35 +130,66 @@ namespace CBEsApi.Controllers
         [HttpGet("bin", Name = "GetRoleBin")]
         public ActionResult<Response> GetRoleBin()
         {
-            List<CbesRole> role = new List<CbesRole>();
+            List<CbesRole> roles = CbesRole.GetAllBin(_db);
 
             return Ok(new Response
             {
                 Status = 200,
                 Message = "Success",
-                Data = role
+                Data = roles
             });
         }
 
-        [HttpPut("bin/delete/{id}", Name = "UpdateDeleteRole")]
+        [HttpPut("bin/cancelDelete/{id}", Name = "UpdateDeleteRole")]
         public ActionResult<Response> UpdateDeleteRole(int id)
         {
-            return Ok(new Response
+            try
             {
-                Status = 200,
-                Message = "Success",
-                Data = id
-            });
+                CbesRole cbe = CbesRole.cancelDelete(_db, id);
+
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbe
+                });
+            }
+            catch
+            {
+                // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "User not found",
+                    Data = null
+                });
+            }
         }
-        [HttpDelete("bin/last-delete/{id}", Name = "UpdateLastDeleteRole")]
+        [HttpDelete("bin/lastDelete/{id}", Name = "UpdateLastDeleteRole")]
+
         public ActionResult<Response> UpdateLastDeleteRole(int id)
         {
-            return Ok(new Response
+            try
             {
-                Status = 200,
-                Message = "Success",
-                Data = id
-            });
+                CbesRole cbe = CbesRole.lastDelete(_db, id);
+
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbe
+                });
+            }
+            catch
+            {
+                // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "User not found",
+                    Data = null
+                });
+            }
         }
     }
 }

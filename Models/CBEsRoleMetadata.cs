@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CBEsApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Models
 {
@@ -19,7 +20,7 @@ namespace CBEsApi.Models
 
         public static CbesRole GetById(CbesManagementContext db, int id)
         {
-            CbesRole? role = db.CbesRoles.Where(q => q.Id == id && q.IsDeleted != true).FirstOrDefault();
+            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).FirstOrDefault();
             return role ?? new CbesRole();
         }
 
@@ -33,6 +34,44 @@ namespace CBEsApi.Models
             db.SaveChanges();
 
             return cbeRole;
+        }
+
+        //  Delete ID
+        public static CbesRole Delete(CbesManagementContext db, int id)
+        {
+            CbesRole cbe = GetById(db, id);
+            cbe.IsDeleted = true;
+            db.Entry(cbe).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return cbe;
+        }
+
+        //  Cancel Delete ID
+        public static CbesRole cancelDelete(CbesManagementContext db, int id)
+        {
+            CbesRole cbe = GetById(db, id);
+            cbe.IsDeleted = false;
+            db.Entry(cbe).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return cbe;
+        }
+        //  Last Delete ID
+        public static CbesRole lastDelete(CbesManagementContext db, int id)
+        {
+            CbesRole cbe = GetById(db, id);
+            cbe.IsLastDelete = true;
+            db.Entry(cbe).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return cbe;
+        }
+
+        public static List<CbesRole> GetAllBin(CbesManagementContext db)
+        {
+            List<CbesRole> roles = db.CbesRoles.Where(q => q.IsDeleted == true).ToList();
+            return roles;
         }
     }
 }
