@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CBEsApi.Data;
 
 namespace CBEsApi.Models;
 
@@ -28,4 +29,5 @@ public partial class CbesRole
     public virtual CbesUser? CreateByNavigation { get; set; }
 
     public virtual CbesUser? UpdateByNavigation { get; set; }
+
 }

@@ -35,9 +35,6 @@ public class AuthorizationController : ControllerBase
 
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
-        public string? Fullname { get; set; }
-
-        public string? Role { get; set; }
     }
 
     /// <summary>
@@ -88,23 +85,23 @@ public class AuthorizationController : ControllerBase
         }
     }
 
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     POST /api/Authorization/login
+    ///     
+    ///     {
+    ///         "username": "admin",
+    ///         "password": "1234"
+    ///     }
+    ///     
+    /// </remarks>
     [HttpPost("Login", Name = "Login")]
-    public IActionResult Login([FromBody] CbesUser request)
+    public IActionResult Login(string username, string password)
     {
-        CbesUser? user = _db.CbesUsers.FirstOrDefault(doc => doc.Username == request.Username && doc.Password == request.Password && doc.IsDeleted == false);
+        CbesUser? user = _db.CbesUsers.FirstOrDefault(doc => doc.Username == username && doc.Password == password && doc.IsDeleted == false);
 
         if (user == null)
-        {
-            return NotFound();
-        }
-
-        string bearerToken;
-
-        try
-        {
-            bearerToken = GenerateToken(user);
-        }
-        catch
         {
             return BadRequest(new Response
             {
@@ -114,6 +111,9 @@ public class AuthorizationController : ControllerBase
             }
             );
         }
+
+        string bearerToken = GenerateToken(user);
+
         return Ok(new Response
         {
             Status = 200,
@@ -125,6 +125,8 @@ public class AuthorizationController : ControllerBase
         });
     }
 
+
+
     [HttpPost("Register", Name = "Register")]
     public ActionResult<Response> Register(RegisterCreate registerCreate)
     {
@@ -132,7 +134,6 @@ public class AuthorizationController : ControllerBase
         {
             Username = registerCreate.Username,
             Password = registerCreate.Password,
-            Fullname = registerCreate.Fullname,
         };
 
 

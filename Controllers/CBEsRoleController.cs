@@ -1,16 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using CBEsApi.Data;
 using CBEsApi.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CBEsApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RoleController : ControllerBase
+    public class CBEsRoleController : ControllerBase
     {
-        private readonly ILogger<RoleController> _logger;
+        private readonly ILogger<CBEsRoleController> _logger;
 
-        public RoleController(ILogger<RoleController> logger)
+        public CBEsRoleController(ILogger<CBEsRoleController> logger)
         {
             _logger = logger;
         }
@@ -18,22 +20,22 @@ namespace CBEsApi.Controllers
         private CbesManagementContext _db = new CbesManagementContext();
 
         [HttpGet(Name = "GetRoles")]
-        public ActionResult<Response> GetRoles()
+        public ActionResult GetRoles()
         {
-            List<CbesRole> role = new List<CbesRole>();
+            List<CbesRole> roles = CbesRole.GetAll(_db);
 
             return Ok(new Response
             {
                 Status = 200,
                 Message = "Success",
-                Data = role
+                Data = roles
             });
         }
 
         [HttpGet("{id}", Name = "GetRole")]
         public ActionResult<Response> GetRole(int id)
         {
-            CbesRole role = new CbesRole();
+            CbesRole role = CbesRole.GetById(_db, id);
 
             return Ok(new Response
             {
@@ -43,9 +45,30 @@ namespace CBEsApi.Controllers
             });
         }
 
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/CBEsRole
+        ///     
+        ///     {
+        ///         "name": "บทบาททดสอบ",
+        ///         "createBy": 1,
+        ///         "updateBy": 1
+        ///     }
+        ///     
+        /// </remarks>
         [HttpPost(Name = "PostRole")]
-        public ActionResult<Response> PostRoleUsers([FromBody] CbesRole role)
+        public ActionResult<Response> PostRoleUsers(CbesRole roleCreate)
         {
+            CbesRole role = new CbesRole
+            {
+                Name = roleCreate.Name,
+                CreateBy = roleCreate.CreateBy,
+                UpdateBy = roleCreate.UpdateBy,
+            };
+
+            role = CbesRole.Create(_db, role);
+
             return Ok(new Response
             {
                 Status = 201,
@@ -77,8 +100,9 @@ namespace CBEsApi.Controllers
         }
 
         [HttpGet("users", Name = "GetUserWithRole")]
-        public ActionResult<Response> GetUserWithRole([FromBody] List<CbesUserWithRole> usersWithRole)
+        public ActionResult<Response> GetUserWithRole()
         {
+            List<CbesUserWithRole> usersWithRole = new List<CbesUserWithRole>();
             return Ok(new Response
             {
                 Status = 200,
@@ -88,8 +112,10 @@ namespace CBEsApi.Controllers
         }
 
         [HttpGet("bin", Name = "GetRoleBin")]
-        public ActionResult<Response> GetRoleBin([FromBody] List<CbesRole> role)
+        public ActionResult<Response> GetRoleBin()
         {
+            List<CbesRole> role = new List<CbesRole>();
+
             return Ok(new Response
             {
                 Status = 200,

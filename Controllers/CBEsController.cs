@@ -1,3 +1,4 @@
+using CBEsApi.Data;
 using CBEsApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,23 +7,39 @@ namespace CBEsApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CBEsController : ControllerBase
+
+
     {
+        private CbesManagementContext _db = new CbesManagementContext();
+
         /// <summary>
         /// Get All CBEs
         /// </summary>
         [HttpGet(Name = "GetCBEs")]
         public ActionResult GetCBEs()
         {
-            List<Cbe> data = new List<Cbe>();
+            List<Cbe> cbes = Cbe.GetAll(_db);
+            return Ok(new Response
+            {
+                Status = 200,
+                Message = "Success",
+                Data = cbes
+            });
+        }
 
-            return Ok(data);
-
-            // return Ok(new Response
-            // {
-            //     Status = 200,
-            //     Message = "Success",
-            //     Data = cbe
-            // });
+        /// <summary>
+        /// Get CBE By ID
+        /// </summary>
+        [HttpGet("{id}", Name = "GetCBE")]
+        public ActionResult GetCBE(int id)
+        {
+            Cbe cbe = Cbe.GetById(_db, id);
+            return Ok(new Response
+            {
+                Status = 200,
+                Message = "Success",
+                Data = cbe
+            });
         }
 
         /// <summary>
