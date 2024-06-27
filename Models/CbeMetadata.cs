@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CBEsApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Models
 {
@@ -21,6 +22,16 @@ namespace CBEsApi.Models
         {
             Cbe? cbe = db.Cbes.Where(q => q.Id == id && q.IsDeleted != true).FirstOrDefault();
             return cbe ?? new Cbe();
+        }
+
+        public static Cbe Delete(CbesManagementContext db, int id)
+        {
+            Cbe cbe = GetById(db, id);
+            cbe.IsDeleted = true;
+            db.Entry(cbe).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return cbe;
         }
 
     }

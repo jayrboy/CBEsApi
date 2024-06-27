@@ -12,11 +12,21 @@ namespace CBEsApi.Models
     [MetadataType(typeof(CbesUserWithRoleMetadata))]
     public partial class CbesUserWithRole
     {
-        public static List<CbesUserWithRole> GetAll(CbesManagementContext db)
+        public static List<CbesUser> GetAll(CbesManagementContext db)
         {
-            List<CbesUserWithRole> roleUsers = db.CbesUserWithRoles.Where(q => q.IsDeleted != true).ToList();
+            List<CbesUser> roleUsers = db.CbesUsers.Where(q => q.IsDeleted != true).ToList();
             return roleUsers;
         }
+
+        public static CbesUserWithRole GetById(CbesManagementContext db, int id)
+        {
+            CbesUserWithRole? roleUser = db.CbesUserWithRoles
+                .Where(q => q.Id == id && q.IsDeleted != true)
+                .Include(p => p.User)
+                .FirstOrDefault();
+            return roleUser ?? new CbesUserWithRole();
+        }
+
 
     }
 }

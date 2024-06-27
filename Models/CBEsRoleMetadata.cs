@@ -20,7 +20,7 @@ namespace CBEsApi.Models
 
         public static CbesRole GetById(CbesManagementContext db, int id)
         {
-            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).FirstOrDefault();
+            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).Include((q) => q.CbesUserWithRoles).FirstOrDefault();
             return role ?? new CbesRole();
         }
 

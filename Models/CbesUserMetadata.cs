@@ -31,8 +31,8 @@ namespace CBEsApi.Models
         //Get ID Action
         public static CbesUser GetById(CbesManagementContext db, int id)
         {
-            CbesUser? result = db.CbesUsers.Where(q => q.Id == id && q.IsDeleted != true).FirstOrDefault();
-            return result ?? new CbesUser();
+            CbesUser? user = db.CbesUsers.Where(q => q.Id == id && q.IsDeleted != true).FirstOrDefault();
+            return user ?? new CbesUser();
         }
 
         //Update Action

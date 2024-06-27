@@ -76,6 +76,11 @@ namespace CBEsApi.Controllers
 
             role = CbesRole.Create(_db, role);
 
+            CbesPermission cbesPermission = new CbesPermission
+            {
+                Name = role.Name,
+            };
+
             return Ok(new Response
             {
                 Status = 201,
@@ -110,27 +115,14 @@ namespace CBEsApi.Controllers
             }
         }
 
-        [HttpPost("users", Name = "PostUserWithRole")]
-        public ActionResult<Response> PostUserWithRole([FromBody] CbesUserWithRole userWithRole)
+        [HttpPost("RoleWithUsers", Name = "PostRoleWithUsers")]
+        public ActionResult<Response> PostRoleWithUsers([FromBody] CbesUserWithRole userWithRole)
         {
             return Ok(new Response
             {
                 Status = 201,
                 Message = "Users with Role Saved",
                 Data = userWithRole
-            });
-        }
-
-        [HttpGet("users", Name = "GetUserWithRole")]
-        public ActionResult<Response> GetUserWithRole()
-        {
-            List<CbesUserWithRole> usersWithRole = CbesUserWithRole.GetAll(_db);
-
-            return Ok(new Response
-            {
-                Status = 200,
-                Message = "RoleUsers Saved",
-                Data = usersWithRole
             });
         }
 

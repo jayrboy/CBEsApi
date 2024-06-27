@@ -48,12 +48,27 @@ namespace CBEsApi.Controllers
         [HttpDelete("{id}", Name = "DeleteCBE")]
         public ActionResult<Response> DeleteCBE(int id)
         {
-            return Ok(new Response
+            try
             {
-                Status = 204,
-                Message = "Success No Content",
-                Data = null
-            });
+                Cbe cbe = Cbe.Delete(_db, id);
+
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbe
+                });
+            }
+            catch
+            {
+                // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "User not found",
+                    Data = null
+                });
+            }
         }
 
         /// <summary>
