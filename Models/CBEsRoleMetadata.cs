@@ -40,6 +40,7 @@ namespace CBEsApi.Models
         public static CbesRole Delete(CbesManagementContext db, int id)
         {
             CbesRole cbe = GetById(db, id);
+            cbe.UpdateDate = DateTime.Now;
             cbe.IsDeleted = true;
             db.Entry(cbe).State = EntityState.Modified;
             db.SaveChanges();
@@ -51,6 +52,7 @@ namespace CBEsApi.Models
         public static CbesRole cancelDelete(CbesManagementContext db, int id)
         {
             CbesRole cbe = GetById(db, id);
+            cbe.UpdateDate = DateTime.Now;
             cbe.IsDeleted = false;
             db.Entry(cbe).State = EntityState.Modified;
             db.SaveChanges();
@@ -61,6 +63,7 @@ namespace CBEsApi.Models
         public static CbesRole lastDelete(CbesManagementContext db, int id)
         {
             CbesRole cbe = GetById(db, id);
+            cbe.UpdateDate = DateTime.Now;
             cbe.IsLastDelete = true;
             db.Entry(cbe).State = EntityState.Modified;
             db.SaveChanges();
@@ -70,7 +73,7 @@ namespace CBEsApi.Models
 
         public static List<CbesRole> GetAllBin(CbesManagementContext db)
         {
-            List<CbesRole> roles = db.CbesRoles.Where(q => q.IsDeleted == true).ToList();
+            List<CbesRole> roles = db.CbesRoles.Where(q => q.IsDeleted == true && q.IsLastDelete == false).ToList();
             return roles;
         }
     }

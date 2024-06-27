@@ -6,6 +6,7 @@ using CBEsApi.Models;
 
 namespace CBEsApi.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
     public class CBEsRoleController : ControllerBase
@@ -18,6 +19,12 @@ namespace CBEsApi.Controllers
         }
 
         private CbesManagementContext _db = new CbesManagementContext();
+
+        public class RequestRoleID
+        {
+            [Required]
+            public int ID { get; set; }
+        }
 
         [HttpGet(Name = "GetRoles")]
         public ActionResult GetRoles()
@@ -77,7 +84,7 @@ namespace CBEsApi.Controllers
             });
         }
 
-        [HttpDelete("{id}", Name = "DeleteRole")]
+        [HttpDelete("delete/{id}", Name = "DeleteRole")]
         public ActionResult DeleteRole(int id)
         {
             try
@@ -140,12 +147,12 @@ namespace CBEsApi.Controllers
             });
         }
 
-        [HttpPut("bin/cancelDelete/{id}", Name = "UpdateDeleteRole")]
-        public ActionResult<Response> UpdateDeleteRole(int id)
+        [HttpPut("bin/CancelDelete", Name = "UpdateDeleteRole")]
+        public ActionResult<Response> UpdateDeleteRole(RequestRoleID request)
         {
             try
             {
-                CbesRole cbe = CbesRole.cancelDelete(_db, id);
+                CbesRole cbe = CbesRole.cancelDelete(_db, request.ID);
 
                 return Ok(new Response
                 {
@@ -165,7 +172,7 @@ namespace CBEsApi.Controllers
                 });
             }
         }
-        [HttpDelete("bin/lastDelete/{id}", Name = "UpdateLastDeleteRole")]
+        [HttpDelete("bin/LastDelete/{id}", Name = "UpdateLastDeleteRole")]
 
         public ActionResult<Response> UpdateLastDeleteRole(int id)
         {
