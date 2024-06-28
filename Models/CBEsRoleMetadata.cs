@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using CBEsApi.Data;
 using Microsoft.EntityFrameworkCore;
+using CBEsApi.Data;
+using CBEsApi.Dtos.CBEsRole;
 
 namespace CBEsApi.Models
 {
@@ -18,10 +19,31 @@ namespace CBEsApi.Models
             return roles;
         }
 
-        public static CbesRole GetById(CbesManagementContext db, int id)
+        public static CbesRoleDto GetById(CbesManagementContext db, int id)
         {
-            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).Include((q) => q.CbesUserWithRoles).FirstOrDefault();
-            return role ?? new CbesRole();
+            var role = db.CbesRoles.Where(q => q.Id == id)
+                                  .Include(q => q.CbesUserWithRoles)
+                                  .ThenInclude(q => q.User)
+                                  .FirstOrDefault();
+
+            if (role == null)
+            {
+                return null; // หรือส่งคืน CbesRoleDto ว่าง
+            }
+
+            var roleDto = new CbesRoleDto
+            {
+                Id = role.Id,
+                Name = role.Name,  // สมมติว่ามีคุณสมบัติ RoleName ใน CbesRole
+                Users = role.CbesUserWithRoles.Select(r => new UserDto
+                {
+                    Id = r.User.Id,
+                    Fullname = r.User.Fullname,
+                    Username = r.User.Username
+                }).ToList()
+            };
+
+            return roleDto;
         }
 
         public static CbesRole Create(CbesManagementContext db, CbesRole cbeRole)
@@ -37,39 +59,39 @@ namespace CBEsApi.Models
         }
 
         //  Delete ID
-        public static CbesRole Delete(CbesManagementContext db, int id)
-        {
-            CbesRole cbe = GetById(db, id);
-            cbe.UpdateDate = DateTime.Now;
-            cbe.IsDeleted = true;
-            db.Entry(cbe).State = EntityState.Modified;
-            db.SaveChanges();
+        // public static CbesRole Delete(CbesManagementContext db, int id)
+        // {
+        //     CbesRole cbe = GetById(db, id);
+        //     cbe.UpdateDate = DateTime.Now;
+        //     cbe.IsDeleted = true;
+        //     db.Entry(cbe).State = EntityState.Modified;
+        //     db.SaveChanges();
 
-            return cbe;
-        }
+        //     return cbe;
+        // }
 
         //  Cancel Delete ID
-        public static CbesRole cancelDelete(CbesManagementContext db, int id)
-        {
-            CbesRole cbe = GetById(db, id);
-            cbe.UpdateDate = DateTime.Now;
-            cbe.IsDeleted = false;
-            db.Entry(cbe).State = EntityState.Modified;
-            db.SaveChanges();
+        // public static CbesRole cancelDelete(CbesManagementContext db, int id)
+        // {
+        //     CbesRole cbe = GetById(db, id);
+        //     cbe.UpdateDate = DateTime.Now;
+        //     cbe.IsDeleted = false;
+        //     db.Entry(cbe).State = EntityState.Modified;
+        //     db.SaveChanges();
 
-            return cbe;
-        }
+        //     return cbe;
+        // }
         //  Last Delete ID
-        public static CbesRole lastDelete(CbesManagementContext db, int id)
-        {
-            CbesRole cbe = GetById(db, id);
-            cbe.UpdateDate = DateTime.Now;
-            cbe.IsLastDelete = true;
-            db.Entry(cbe).State = EntityState.Modified;
-            db.SaveChanges();
+        // public static CbesRole lastDelete(CbesManagementContext db, int id)
+        // {
+        //     CbesRole cbe = GetById(db, id);
+        //     cbe.UpdateDate = DateTime.Now;
+        //     cbe.IsLastDelete = true;
+        //     db.Entry(cbe).State = EntityState.Modified;
+        //     db.SaveChanges();
 
-            return cbe;
-        }
+        //     return cbe;
+        // }
 
         public static List<CbesRole> GetAllBin(CbesManagementContext db)
         {
