@@ -58,6 +58,7 @@ namespace CBEsApi.Models
             cbeRole.UpdateDate = DateTime.Now;
             cbeRole.IsDeleted = false;
             cbeRole.IsLastDelete = false;
+
             db.CbesRoles.Add(cbeRole);
             db.SaveChanges();
 

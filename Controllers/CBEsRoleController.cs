@@ -60,33 +60,50 @@ namespace CBEsApi.Controllers
         ///     
         ///     {
         ///         "name": "บทบาททดสอบ",
+        ///         "permissions": [
+        ///             {
+        ///                 "id": 1
+        ///             },
+        ///             {
+        ///                 "id": 3
+        ///             }
+        ///         ],
         ///         "createBy": 1,
         ///         "updateBy": 1
         ///     }
         ///     
         /// </remarks>
-        [HttpPost(Name = "PostRole")]
-        public ActionResult<Response> PostRoleUsers(CbesRole roleCreate)
+        [HttpPost(Name = "PostRolePermission")]
+        public ActionResult<Response> PostRolePermission(CbesRolePermissionDto roleCreate)
         {
             CbesRole role = new CbesRole
             {
                 Name = roleCreate.Name,
-                CbesRoleWithPermissions = roleCreate.CbesRoleWithPermissions,
                 CreateBy = roleCreate.CreateBy,
                 UpdateBy = roleCreate.UpdateBy,
             };
 
-            role = CbesRole.Create(_db, role);
-
-            CbesPermission cbesPermission = new CbesPermission
+            foreach (var p in roleCreate.Permissions)
             {
-                Name = role.Name,
-            };
+                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
+                {
+                    IsChecked = true,
+                    CreateDate = DateTime.Now,
+                    UpdateDate = DateTime.Now,
+                    IsDeleted = false,
+                    PermissionId = p.Id,
+                };
+
+                role.CbesRoleWithPermissions.Add(rolePermissions);
+            }
+
+
+            role = CbesRole.Create(_db, role);
 
             return Ok(new Response
             {
                 Status = 201,
-                Message = "Role Saved",
+                Message = "Role and Permissions Saved",
                 Data = role
             });
         }
