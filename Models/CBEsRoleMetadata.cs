@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using CBEsApi.Data;
 using CBEsApi.Dtos.CBEsRole;
-using CBEsApi.Dtos.CBEsUser;
 
 namespace CBEsApi.Models
 {
@@ -20,19 +19,19 @@ namespace CBEsApi.Models
             return roles;
         }
 
-        public static CbesRoleUserDto GetById(CbesManagementContext db, int id)
+        public static CbesRoleDto GetById(CbesManagementContext db, int id)
         {
-            var role = db.CbesRoles.Where(q => q.Id == id)
+            CbesRole? role = db.CbesRoles.Where(q => q.Id == id)
                                   .Include(q => q.CbesUserWithRoles)
-                                  .ThenInclude(q => q.User)
-                                  .FirstOrDefault();
+                                    .ThenInclude(q => q.User)
+                                  .Include(q => q.CbesRoleWithPermissions).FirstOrDefault();
 
             if (role == null)
             {
                 return null; // หรือส่งคืน CbesRoleDto ว่าง
             }
 
-            var roleDto = new CbesRoleUserDto
+            CbesRoleDto roleDto = new CbesRoleDto
             {
                 Id = role.Id,
                 Name = role.Name,  // สมมติว่ามีคุณสมบัติ RoleName ใน CbesRole
@@ -41,7 +40,13 @@ namespace CBEsApi.Models
                     Id = r.User.Id,
                     Fullname = r.User.Fullname,
                     Username = r.User.Username
+                }).ToList(),
+
+                Permissions = role.CbesRoleWithPermissions.Where((q) => q.IsChecked == true).Select(p => new PermissionDto
+                {
+                    Id = p.Id,
                 }).ToList()
+
             };
 
             return roleDto;

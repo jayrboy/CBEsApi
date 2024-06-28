@@ -1,4 +1,4 @@
-namespace CBEsApi.Dtos.CBEsUser
+namespace CBEsApi.Dtos.CBEsRole
 {
     public class UserDto
     {

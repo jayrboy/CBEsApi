@@ -1,4 +1,4 @@
-namespace CBEsApi.Dtos.CBEsPermission
+namespace CBEsApi.Dtos.CBEsRole
 {
     public class PermissionDto
     {

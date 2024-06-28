@@ -43,7 +43,7 @@ namespace CBEsApi.Controllers
         [HttpGet("{id}", Name = "GetRole")]
         public ActionResult<Response> GetRole(int id)
         {
-            CbesRoleUserDto role = CbesRole.GetById(_db, id);
+            CbesRoleDto role = CbesRole.GetById(_db, id);
 
             return Ok(new Response
             {
