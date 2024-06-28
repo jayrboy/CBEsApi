@@ -65,40 +65,53 @@ namespace CBEsApi.Models
             return cbeRole;
         }
 
-        //  Delete ID
-        // public static CbesRole Delete(CbesManagementContext db, int id)
-        // {
-        //     CbesRole cbe = GetById(db, id);
-        //     cbe.UpdateDate = DateTime.Now;
-        //     cbe.IsDeleted = true;
-        //     db.Entry(cbe).State = EntityState.Modified;
-        //     db.SaveChanges();
+        public static CbesRole GetRoleById(CbesManagementContext db, int id)
+        {
+            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).FirstOrDefault();
 
-        //     return cbe;
-        // }
+            if (role == null)
+            {
+                return null; // หรือส่งคืน CbesRoleDto ว่าง
+            }
+
+
+            return role;
+        }
+
+        //  Delete ID
+        public static CbesRole Delete(CbesManagementContext db, int id)
+        {
+            CbesRole cbe = GetRoleById(db, id);
+            cbe.UpdateDate = DateTime.Now;
+            cbe.IsDeleted = true;
+            db.Entry(cbe).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return cbe;
+        }
 
         //  Cancel Delete ID
-        // public static CbesRole cancelDelete(CbesManagementContext db, int id)
-        // {
-        //     CbesRole cbe = GetById(db, id);
-        //     cbe.UpdateDate = DateTime.Now;
-        //     cbe.IsDeleted = false;
-        //     db.Entry(cbe).State = EntityState.Modified;
-        //     db.SaveChanges();
+        public static CbesRole cancelDelete(CbesManagementContext db, int id)
+        {
+            CbesRole cbe = GetRoleById(db, id);
+            cbe.UpdateDate = DateTime.Now;
+            cbe.IsDeleted = false;
+            db.Entry(cbe).State = EntityState.Modified;
+            db.SaveChanges();
 
-        //     return cbe;
-        // }
+            return cbe;
+        }
         //  Last Delete ID
-        // public static CbesRole lastDelete(CbesManagementContext db, int id)
-        // {
-        //     CbesRole cbe = GetById(db, id);
-        //     cbe.UpdateDate = DateTime.Now;
-        //     cbe.IsLastDelete = true;
-        //     db.Entry(cbe).State = EntityState.Modified;
-        //     db.SaveChanges();
+        public static CbesRole lastDelete(CbesManagementContext db, int id)
+        {
+            CbesRole cbe = GetRoleById(db, id);
+            cbe.UpdateDate = DateTime.Now;
+            cbe.IsLastDelete = true;
+            db.Entry(cbe).State = EntityState.Modified;
+            db.SaveChanges();
 
-        //     return cbe;
-        // }
+            return cbe;
+        }
 
         public static List<CbesRole> GetAllBin(CbesManagementContext db)
         {

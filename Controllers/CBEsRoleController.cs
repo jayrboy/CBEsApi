@@ -108,31 +108,31 @@ namespace CBEsApi.Controllers
             });
         }
 
-        // [HttpDelete("delete/{id}", Name = "DeleteRole")]
-        // public ActionResult DeleteRole(int id)
-        // {
-        //     try
-        //     {
-        //         CbesRole cbe = CbesRole.Delete(_db, id);
+        [HttpDelete("delete/{id}", Name = "DeleteRole")]
+        public ActionResult DeleteRole(int id)
+        {
+            try
+            {
+                CbesRole cbe = CbesRole.Delete(_db, id);
 
-        //         return Ok(new Response
-        //         {
-        //             Status = 200,
-        //             Message = "Success",
-        //             Data = cbe
-        //         });
-        //     }
-        //     catch
-        //     {
-        //         // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
-        //         return NotFound(new Response
-        //         {
-        //             Status = 404,
-        //             Message = "User not found",
-        //             Data = null
-        //         });
-        //     }
-        // }
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbe
+                });
+            }
+            catch
+            {
+                // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "User not found",
+                    Data = null
+                });
+            }
+        }
 
         [HttpPost("RoleWithUsers", Name = "PostRoleWithUsers")]
         public ActionResult<Response> PostRoleWithUsers([FromBody] CbesUserWithRole userWithRole)
@@ -158,57 +158,57 @@ namespace CBEsApi.Controllers
             });
         }
 
-        // [HttpPut("bin/CancelDelete", Name = "UpdateDeleteRole")]
-        // public ActionResult<Response> UpdateDeleteRole(RequestRoleID request)
-        // {
-        //     try
-        //     {
-        //         CbesRole cbe = CbesRole.cancelDelete(_db, request.ID);
+        [HttpPut("bin/CancelDelete", Name = "UpdateDeleteRole")]
+        public ActionResult<Response> UpdateDeleteRole(RequestRoleID request)
+        {
+            try
+            {
+                CbesRole cbe = CbesRole.cancelDelete(_db, request.ID);
 
-        //         return Ok(new Response
-        //         {
-        //             Status = 200,
-        //             Message = "Success",
-        //             Data = cbe
-        //         });
-        //     }
-        //     catch
-        //     {
-        //         // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
-        //         return NotFound(new Response
-        //         {
-        //             Status = 404,
-        //             Message = "User not found",
-        //             Data = null
-        //         });
-        //     }
-        // }
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbe
+                });
+            }
+            catch
+            {
+                // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "User not found",
+                    Data = null
+                });
+            }
+        }
 
-        // [HttpDelete("bin/LastDelete/{id}", Name = "UpdateLastDeleteRole")]
+        [HttpDelete("bin/LastDelete/{id}", Name = "UpdateLastDeleteRole")]
 
-        // public ActionResult<Response> UpdateLastDeleteRole(int id)
-        // {
-        //     try
-        //     {
-        //         CbesRole cbe = CbesRole.lastDelete(_db, id);
+        public ActionResult<Response> UpdateLastDeleteRole(int id)
+        {
+            try
+            {
+                CbesRole cbe = CbesRole.lastDelete(_db, id);
 
-        //         return Ok(new Response
-        //         {
-        //             Status = 200,
-        //             Message = "Success",
-        //             Data = cbe
-        //         });
-        //     }
-        //     catch
-        //     {
-        //         // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
-        //         return NotFound(new Response
-        //         {
-        //             Status = 404,
-        //             Message = "User not found",
-        //             Data = null
-        //         });
-        //     }
-        // }
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbe
+                });
+            }
+            catch
+            {
+                // ถ้าไม่พบข้อมูล user ตาม id ที่ระบุ
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "User not found",
+                    Data = null
+                });
+            }
+        }
     }
 }
