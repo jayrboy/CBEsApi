@@ -69,7 +69,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 /* ------------------ Database Connect to SQL Server Management Studio --------------------- */
-builder.Services.AddDbContext<CbesManagementContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<CbesManagementContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 //TODO: Add CORS Policy
 builder.Services.AddCors(options =>

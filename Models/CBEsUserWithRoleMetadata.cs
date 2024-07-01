@@ -27,6 +27,5 @@ namespace CBEsApi.Models
             return roleUser ?? new CbesUserWithRole();
         }
 
-
     }
 }

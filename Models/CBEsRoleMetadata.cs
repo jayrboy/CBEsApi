@@ -22,9 +22,10 @@ namespace CBEsApi.Models
         public static CbesRoleDto GetById(CbesManagementContext db, int id)
         {
             CbesRole? role = db.CbesRoles.Where(q => q.Id == id)
-                                  .Include(q => q.CbesUserWithRoles)
-                                    .ThenInclude(q => q.User)
-                                  .Include(q => q.CbesRoleWithPermissions).FirstOrDefault();
+                                         .Include(q => q.CbesUserWithRoles)
+                                            .ThenInclude(ur => ur.User)
+                                         .Include(q => q.CbesRoleWithPermissions)
+                                         .FirstOrDefault();
 
             if (role == null)
             {
@@ -39,7 +40,8 @@ namespace CBEsApi.Models
                 {
                     Id = r.User.Id,
                     Fullname = r.User.Fullname,
-                    Username = r.User.Username
+                    Username = r.User.Username,
+                    IsDeleted = r.User.IsDeleted
                 }).ToList(),
 
                 Permissions = role.CbesRoleWithPermissions.Where((q) => q.IsChecked == true).Select(p => new PermissionDto
@@ -65,9 +67,9 @@ namespace CBEsApi.Models
             return cbeRole;
         }
 
-        public static CbesRole GetRoleById(CbesManagementContext db, int id)
+        public static CbesRole GetRoleByIdAndUser(CbesManagementContext db, int id)
         {
-            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).FirstOrDefault();
+            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).Include((u) => u.CbesUserWithRoles).ThenInclude(q => q.User).FirstOrDefault();
 
             if (role == null)
             {
@@ -81,7 +83,7 @@ namespace CBEsApi.Models
         //  Delete ID
         public static CbesRole Delete(CbesManagementContext db, int id)
         {
-            CbesRole cbe = GetRoleById(db, id);
+            CbesRole cbe = GetRoleByIdAndUser(db, id);
             cbe.UpdateDate = DateTime.Now;
             cbe.IsDeleted = true;
             db.Entry(cbe).State = EntityState.Modified;
@@ -93,7 +95,7 @@ namespace CBEsApi.Models
         //  Cancel Delete ID
         public static CbesRole cancelDelete(CbesManagementContext db, int id)
         {
-            CbesRole cbe = GetRoleById(db, id);
+            CbesRole cbe = GetRoleByIdAndUser(db, id);
             cbe.UpdateDate = DateTime.Now;
             cbe.IsDeleted = false;
             db.Entry(cbe).State = EntityState.Modified;
@@ -104,7 +106,7 @@ namespace CBEsApi.Models
         //  Last Delete ID
         public static CbesRole lastDelete(CbesManagementContext db, int id)
         {
-            CbesRole cbe = GetRoleById(db, id);
+            CbesRole cbe = GetRoleByIdAndUser(db, id);
             cbe.UpdateDate = DateTime.Now;
             cbe.IsLastDelete = true;
             db.Entry(cbe).State = EntityState.Modified;

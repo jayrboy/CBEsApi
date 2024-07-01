@@ -59,6 +59,8 @@ public class AuthorizationController : ControllerBase
         var claims = new List<Claim>
             {
             new Claim(ClaimTypes.Name, user.Username),
+            new Claim("ID", user.Id.ToString()),
+
             // Add more claims as needed
             };
 
