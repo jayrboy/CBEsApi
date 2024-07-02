@@ -120,5 +120,46 @@ namespace CBEsApi.Models
             List<CbesRole> roles = db.CbesRoles.Where(q => q.IsDeleted == true && q.IsLastDelete == false).ToList();
             return roles;
         }
+
+        public static CbesRole Get(CbesManagementContext db, int roleId)
+        {
+            var role = db.CbesRoles
+                         .Include(r => r.CbesRoleWithPermissions)
+                         .FirstOrDefault(r => r.Id == roleId);
+
+            if (role == null)
+            {
+                throw new ArgumentException("Role not found");
+            }
+
+            return role;
+        }
+
+        public static CbesRole Update(CbesManagementContext db, CbesRole cbeRole)
+        {
+            var existingRole = db.CbesRoles.Find(cbeRole.Id);
+            if (existingRole == null)
+            {
+                throw new ArgumentException("Role not found");
+            }
+
+            existingRole.Name = cbeRole.Name;
+            existingRole.UpdateBy = cbeRole.UpdateBy;
+            existingRole.UpdateDate = DateTime.Now;
+            existingRole.IsDeleted = cbeRole.IsDeleted;
+            existingRole.IsLastDelete = cbeRole.IsLastDelete;
+
+            // Clear existing permissions
+            existingRole.CbesRoleWithPermissions.Clear();
+            foreach (var rolePermission in cbeRole.CbesRoleWithPermissions)
+            {
+                existingRole.CbesRoleWithPermissions.Add(rolePermission);
+            }
+
+            db.CbesRoles.Update(existingRole);
+            db.SaveChanges();
+
+            return existingRole;
+        }
     }
 }

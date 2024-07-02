@@ -8,6 +8,7 @@ using System.Security.Claims;
 
 namespace CBEsApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CBEsRoleController : ControllerBase
@@ -108,6 +109,70 @@ namespace CBEsApi.Controllers
             });
         }
 
+
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/CBEsRole
+        ///     
+        ///     {
+        ///         "id": 1,
+        ///         "name": "บทบาททดสอบ",
+        ///         "permissions": [
+        ///             {
+        ///                 "id": 1
+        ///             },
+        ///             {
+        ///                 "id": 3
+        ///             }
+        ///         ],
+        ///         "createBy": 1,
+        ///         "updateBy": 1
+        ///     }
+        ///     
+        /// </remarks>
+        [HttpPut(Name = "PutRolePermission")]
+        public ActionResult<Response> PutRolePermission(CbesRolePermissionDto roleUpdate)
+        {
+            CbesRole role = CbesRole.Get(_db, roleUpdate.ID);
+            if (role == null)
+            {
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "Role not found",
+                });
+            }
+
+            role.Name = roleUpdate.Name;
+            role.UpdateBy = roleUpdate.UpdateBy;
+            role.UpdateDate = DateTime.Now;
+
+            role.CbesRoleWithPermissions.Clear();
+            foreach (var p in roleUpdate.Permissions)
+            {
+                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
+                {
+                    IsChecked = true,
+                    CreateDate = DateTime.Now,
+                    UpdateDate = DateTime.Now,
+                    IsDeleted = false,
+                    PermissionId = p.Id,
+                };
+
+                role.CbesRoleWithPermissions.Add(rolePermissions);
+            }
+
+            role = CbesRole.Update(_db, role);
+
+            return Ok(new Response
+            {
+                Status = 200,
+                Message = "Role and Permissions Updated",
+                Data = role
+            });
+        }
+
         [HttpDelete("delete/{id}", Name = "DeleteRole")]
         public ActionResult DeleteRole(int id)
         {
@@ -158,9 +223,8 @@ namespace CBEsApi.Controllers
         ///         ]
         ///     }
         /// </remarks>
-        [Authorize]
-        [HttpPut("RoleWithUsers", Name = "PutRoleWithUsers")]
-        public ActionResult<Response> PutRoleWithUsers(CbesManagementContext _db, CbesRoleUserDto requestRole)
+        [HttpPut("RoleWithUsers", Name = "PutRoleWithPermissions")]
+        public ActionResult<Response> PutRoleWithPermissions(CbesManagementContext _db, CbesRolePermissionDto requestRole)
         {
             try
             {
@@ -179,7 +243,7 @@ namespace CBEsApi.Controllers
                     });
                 }
 
-                if (requestRole.Users == null || requestRole.Users.Count == 0)
+                if (requestRole.Permissions == null || requestRole.Permissions.Count == 0)
                 {
                     // ถ้าไม่มีผู้ใช้ใน requestRole.Users ให้ตั้งค่า IsDeleted เป็น true สำหรับผู้ใช้ทั้งหมด
                     foreach (var userRole in oldRole.CbesUserWithRoles)
@@ -191,7 +255,7 @@ namespace CBEsApi.Controllers
                 }
                 else
                 {
-                    foreach (var u in requestRole.Users)
+                    foreach (var u in requestRole.Permissions)
                     {
                         // ค้นหาผู้ใช้ที่มีอยู่ใน oldRole.CbesUserWithRoles
                         CbesUserWithRole? existingUserRole = oldRole.CbesUserWithRoles.FirstOrDefault(ur => ur.UserId == u.Id);
@@ -199,7 +263,6 @@ namespace CBEsApi.Controllers
                         if (existingUserRole != null)
                         {
                             // ถ้ามีอยู่แล้วอัปเดต isDeleted
-                            existingUserRole.IsDeleted = requestRole.isDeleted;
                             existingUserRole.UpdateBy = userClaims;
                             existingUserRole.UpdateDate = DateTime.UtcNow;
                         }
@@ -241,8 +304,6 @@ namespace CBEsApi.Controllers
                 });
             }
         }
-
-
 
 
         [HttpGet("bin", Name = "GetRoleBin")]
