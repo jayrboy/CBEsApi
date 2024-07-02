@@ -26,6 +26,22 @@ public class AuthorizationController : ControllerBase
 
     private CbesManagementContext _db = new CbesManagementContext();
 
+    public struct RequestCreate
+    {
+        /// <summary>
+        /// Username of the User
+        /// </summary>
+        /// <example>admin</example>
+        /// <required>true</required>
+        public string? Username { get; set; }
+
+        /// <summary>
+        /// Password of the User
+        /// </summary>
+        /// <example>1234</example>
+        /// <required>true</required>
+        public string? Password { get; set; }
+    }
 
     public struct RegisterCreate
     {
@@ -99,9 +115,9 @@ public class AuthorizationController : ControllerBase
     ///     
     /// </remarks>
     [HttpPost("Login", Name = "Login")]
-    public IActionResult Login(string username, string password)
+    public IActionResult Login([FromBody] RequestCreate request)
     {
-        CbesUser? user = _db.CbesUsers.FirstOrDefault(doc => doc.Username == username && doc.Password == password && doc.IsDeleted == false);
+        CbesUser? user = _db.CbesUsers.FirstOrDefault(doc => doc.Username == request.Username && doc.Password == request.Password && doc.IsDeleted == false);
 
         if (user == null)
         {

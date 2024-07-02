@@ -8,7 +8,6 @@ using System.Security.Claims;
 
 namespace CBEsApi.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class CBEsRoleController : ControllerBase
