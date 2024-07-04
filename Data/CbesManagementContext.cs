@@ -749,6 +749,10 @@ public partial class CbesManagementContext : DbContext
             entity.Property(e => e.RoleId).HasColumnName("Role_id");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
+            entity.HasOne(d => d.Permission).WithMany(p => p.CbesRoleWithPermissions)
+                .HasForeignKey(d => d.PermissionId)
+                .HasConstraintName("FK_CBEsRoleWithPermission_CBEsPermission");
+
             entity.HasOne(d => d.Role).WithMany(p => p.CbesRoleWithPermissions)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK_RoleWithPermission_RoleID");

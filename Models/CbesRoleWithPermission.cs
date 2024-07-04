@@ -19,5 +19,7 @@ public partial class CbesRoleWithPermission
 
     public int? PermissionId { get; set; }
 
+    public virtual CbesPermission? Permission { get; set; }
+
     public virtual CbesRole? Role { get; set; }
 }

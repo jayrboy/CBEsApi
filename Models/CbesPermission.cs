@@ -19,6 +19,8 @@ public partial class CbesPermission
 
     public int? UpdateBy { get; set; }
 
+    public virtual ICollection<CbesRoleWithPermission> CbesRoleWithPermissions { get; set; } = new List<CbesRoleWithPermission>();
+
     public virtual CbesUser? CreateByNavigation { get; set; }
 
     public virtual CbesUser? UpdateByNavigation { get; set; }
