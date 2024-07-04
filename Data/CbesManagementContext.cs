@@ -135,6 +135,7 @@ public partial class CbesManagementContext : DbContext
             entity.Property(e => e.CbesPlanningId).HasColumnName("CBEsPlanning_id");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.HeaderId).HasColumnName("Header_id");
+            entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.CbesPlanning).WithMany(p => p.CbesActivities)
@@ -486,7 +487,7 @@ public partial class CbesManagementContext : DbContext
             entity.Property(e => e.CbesId).HasColumnName("CBEs_id");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Name).HasMaxLength(200);
             entity.Property(e => e.ProcessHeaderId).HasColumnName("ProcessHeader_id");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
