@@ -751,7 +751,7 @@ public partial class CbesManagementContext : DbContext
 
             entity.HasOne(d => d.Permission).WithMany(p => p.CbesRoleWithPermissions)
                 .HasForeignKey(d => d.PermissionId)
-                .HasConstraintName("FK_CBEsRoleWithPermission_CBEsPermission");
+                .HasConstraintName("FK_RoleWithPermission_PermissionID");
 
             entity.HasOne(d => d.Role).WithMany(p => p.CbesRoleWithPermissions)
                 .HasForeignKey(d => d.RoleId)

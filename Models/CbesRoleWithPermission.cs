@@ -19,6 +19,10 @@ public partial class CbesRoleWithPermission
 
     public int? PermissionId { get; set; }
 
+    public int? CreateBy { get; set; }
+
+    public int? UpdateBy { get; set; }
+
     public virtual CbesPermission? Permission { get; set; }
 
     public virtual CbesRole? Role { get; set; }
