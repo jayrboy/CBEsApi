@@ -713,11 +713,11 @@ public partial class CbesManagementContext : DbContext
                 .HasForeignKey(d => d.CbesPlanningLogId)
                 .HasConstraintName("FK_CBEsReportForm_LOG_CBESPlanning_LOG_id");
 
-            entity.HasOne(d => d.UpdateByNavigation).WithMany(p => p.CbesReportFormLogs)
+            entity.HasOne(d => d.UpdateByNavigation).WithMany(p => p.CbesReportFormLogUpdateByNavigations)
                 .HasForeignKey(d => d.UpdateBy)
                 .HasConstraintName("FK_CBEsReportForm_LOG_UpdateByID");
 
-            entity.HasOne(d => d.UserVerifyNavigation).WithMany(p => p.CbesReportFormLogs)
+            entity.HasOne(d => d.UserVerifyNavigation).WithMany(p => p.CbesReportFormLogUserVerifyNavigations)
                 .HasForeignKey(d => d.UserVerify)
                 .HasConstraintName("FK_CBEsReportForm_LOG_UserVerify");
         });

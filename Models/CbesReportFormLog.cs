@@ -33,5 +33,5 @@ public partial class CbesReportFormLog
 
     public virtual CbesUser? UpdateByNavigation { get; set; }
 
-    public virtual CbesUserWithRole? UserVerifyNavigation { get; set; }
+    public virtual CbesUser? UserVerifyNavigation { get; set; }
 }

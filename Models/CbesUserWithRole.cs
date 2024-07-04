@@ -21,8 +21,6 @@ public partial class CbesUserWithRole
 
     public int? UserId { get; set; }
 
-    public virtual ICollection<CbesReportFormLog> CbesReportFormLogs { get; set; } = new List<CbesReportFormLog>();
-
     public virtual CbesUser? CreateByNavigation { get; set; }
 
     public virtual CbesRole? Role { get; set; }

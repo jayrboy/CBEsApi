@@ -55,7 +55,9 @@ public partial class CbesUser
 
     public virtual ICollection<CbesReportForm> CbesReportFormCreateByNavigations { get; set; } = new List<CbesReportForm>();
 
-    public virtual ICollection<CbesReportFormLog> CbesReportFormLogs { get; set; } = new List<CbesReportFormLog>();
+    public virtual ICollection<CbesReportFormLog> CbesReportFormLogUpdateByNavigations { get; set; } = new List<CbesReportFormLog>();
+
+    public virtual ICollection<CbesReportFormLog> CbesReportFormLogUserVerifyNavigations { get; set; } = new List<CbesReportFormLog>();
 
     public virtual ICollection<CbesReportForm> CbesReportFormUserVerifyNavigations { get; set; } = new List<CbesReportForm>();
 
