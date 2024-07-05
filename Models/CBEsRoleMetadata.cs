@@ -19,38 +19,38 @@ namespace CBEsApi.Models
             return roles;
         }
 
+        //TODO:
         public static CbesRoleDto GetById(CbesManagementContext db, int id)
         {
-            CbesRole? role = db.CbesRoles.Where(q => q.Id == id)
-                                         .Include(q => q.CbesUserWithRoles)
-                                            .ThenInclude(ur => ur.User)
+            CbesRole? role = db.CbesRoles.Where(q => q.Id == id && q.IsDeleted != true)
                                          .Include(q => q.CbesRoleWithPermissions)
+                                          .ThenInclude((q) => q.Permission)
                                          .FirstOrDefault();
-
-            if (role == null)
-            {
-                return null; // หรือส่งคืน CbesRoleDto ว่าง
-            }
 
             CbesRoleDto roleDto = new CbesRoleDto
             {
                 Id = role.Id,
-                Name = role.Name,  // สมมติว่ามีคุณสมบัติ RoleName ใน CbesRole
-                Users = role.CbesUserWithRoles.Select(r => new UserDto
-                {
-                    Id = r.User.Id,
-                    Fullname = r.User.Fullname,
-                    Username = r.User.Username,
-                    IsDeleted = r.User.IsDeleted
-                }).ToList(),
-
-                Permissions = role.CbesRoleWithPermissions.Where((q) => q.IsChecked == true).Select(p => new PermissionDto
-                {
-                    Id = p.Id,
-                }).ToList()
-
+                Name = role.Name,
+                UpdateDate = role.UpdateDate,
+                IsDeleted = role.IsDeleted,
+                IsLastDelete = role.IsLastDelete,
+                CreateBy = role.CreateBy,
+                UpdateBy = role.UpdateBy,
+                CbesRoleWithPermission = role.CbesRoleWithPermissions
+                                    .Select(p => new CbesRoleWithPermissionDto
+                                    {
+                                        Id = p.Id,
+                                        IsChecked = p.IsChecked,
+                                        IsDeleted = p.IsDeleted,
+                                        RoleId = p.RoleId,
+                                        PermissionId = p.PermissionId,
+                                        Permission = new PermissionDto
+                                        {
+                                            Id = p.Permission.Id,
+                                            Name = p.Permission.Name,
+                                        }
+                                    }).ToList()
             };
-
             return roleDto;
         }
 

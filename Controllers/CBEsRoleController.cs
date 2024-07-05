@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace CBEsApi.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CBEsRoleController : ControllerBase
@@ -74,40 +74,40 @@ namespace CBEsApi.Controllers
         ///     }
         ///     
         /// </remarks>
-        [HttpPost(Name = "PostRolePermission")]
-        public ActionResult<Response> PostRolePermission(CbesRolePermissionDto roleCreate)
-        {
-            CbesRole role = new CbesRole
-            {
-                Name = roleCreate.Name,
-                CreateBy = roleCreate.CreateBy,
-                UpdateBy = roleCreate.UpdateBy,
-            };
+        // [HttpPost(Name = "PostRolePermission")]
+        // public ActionResult<Response> PostRolePermission(CbesRolePermissionDto roleCreate)
+        // {
+        //     CbesRole role = new CbesRole
+        //     {
+        //         Name = roleCreate.Name,
+        //         CreateBy = roleCreate.CreateBy,
+        //         UpdateBy = roleCreate.UpdateBy,
+        //     };
 
-            foreach (var p in roleCreate.Permissions)
-            {
-                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
-                {
-                    IsChecked = true,
-                    CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now,
-                    IsDeleted = false,
-                    PermissionId = p.Id,
-                };
+        //     foreach (var p in roleCreate.CbesRoleWithPermissions)
+        //     {
+        //         CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
+        //         {
+        //             IsChecked = true,
+        //             CreateDate = DateTime.Now,
+        //             UpdateDate = DateTime.Now,
+        //             IsDeleted = false,
+        //             PermissionId = p.ID,
+        //         };
 
-                role.CbesRoleWithPermissions.Add(rolePermissions);
-            }
+        //         role.CbesRoleWithPermissions.Add(rolePermissions);
+        //     }
 
 
-            role = CbesRole.Create(_db, role);
+        //     role = CbesRole.Create(_db, role);
 
-            return Ok(new Response
-            {
-                Status = 201,
-                Message = "Role and Permissions Saved",
-                Data = role
-            });
-        }
+        //     return Ok(new Response
+        //     {
+        //         Status = 201,
+        //         Message = "Role and Permissions Saved",
+        //         Data = role
+        //     });
+        // }
 
 
         /// <remarks>
@@ -131,47 +131,47 @@ namespace CBEsApi.Controllers
         ///     }
         ///     
         /// </remarks>
-        [HttpPut(Name = "PutRolePermission")]
-        public ActionResult<Response> PutRolePermission(CbesRolePermissionDto roleUpdate)
-        {
-            CbesRole role = CbesRole.Get(_db, roleUpdate.ID);
-            if (role == null)
-            {
-                return NotFound(new Response
-                {
-                    Status = 404,
-                    Message = "Role not found",
-                });
-            }
+        // [HttpPut(Name = "PutRolePermission")]
+        // public ActionResult<Response> PutRolePermission(CbesRolePermissionDto roleUpdate)
+        // {
+        //     CbesRole role = CbesRole.Get(_db, roleUpdate.Id);
+        //     if (role == null)
+        //     {
+        //         return NotFound(new Response
+        //         {
+        //             Status = 404,
+        //             Message = "Role not found",
+        //         });
+        //     }
 
-            role.Name = roleUpdate.Name;
-            role.UpdateBy = roleUpdate.UpdateBy;
-            role.UpdateDate = DateTime.Now;
+        //     // role.Name = roleUpdate.Name;
+        //     role.UpdateBy = roleUpdate.UpdateBy;
+        //     role.UpdateDate = DateTime.Now;
 
-            role.CbesRoleWithPermissions.Clear();
-            foreach (var p in roleUpdate.Permissions)
-            {
-                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
-                {
-                    IsChecked = true,
-                    CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now,
-                    IsDeleted = false,
-                    PermissionId = p.Id,
-                };
+        //     role.CbesRoleWithPermissions.Clear();
+        //     foreach (var p in roleUpdate.Permission)
+        //     {
+        //         CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
+        //         {
+        //             IsChecked = true,
+        //             CreateDate = DateTime.Now,
+        //             UpdateDate = DateTime.Now,
+        //             IsDeleted = false,
+        //             PermissionId = p.Id,
+        //         };
 
-                role.CbesRoleWithPermissions.Add(rolePermissions);
-            }
+        //         role.CbesRoleWithPermissions.Add(rolePermissions);
+        //     }
 
-            role = CbesRole.Update(_db, role);
+        //     role = CbesRole.Update(_db, role);
 
-            return Ok(new Response
-            {
-                Status = 200,
-                Message = "Role and Permissions Updated",
-                Data = role
-            });
-        }
+        //     return Ok(new Response
+        //     {
+        //         Status = 200,
+        //         Message = "Role and Permissions Updated",
+        //         Data = role
+        //     });
+        // }
 
         [HttpDelete("delete/{id}", Name = "DeleteRole")]
         public ActionResult DeleteRole(int id)
@@ -223,87 +223,87 @@ namespace CBEsApi.Controllers
         ///         ]
         ///     }
         /// </remarks>
-        [HttpPut("RoleWithUsers", Name = "PutRoleWithPermissions")]
-        public ActionResult<Response> PutRoleWithPermissions(CbesManagementContext _db, CbesRolePermissionDto requestRole)
-        {
-            try
-            {
-                // ดึงค่า userClaims และแปลงเป็น int
-                var userClaimsString = User.FindFirst("ID")?.Value;
-                int userClaims = Convert.ToInt32(userClaimsString);
+        // [HttpPut("RoleWithUsers", Name = "PutRoleWithPermissions")]
+        // public ActionResult<Response> PutRoleWithPermissions(CbesManagementContext _db, CbesRolePermissionDto requestRole)
+        // {
+        //     try
+        //     {
+        //         // ดึงค่า userClaims และแปลงเป็น int
+        //         var userClaimsString = User.FindFirst("ID")?.Value;
+        //         int userClaims = Convert.ToInt32(userClaimsString);
 
-                CbesRole oldRole = CbesRole.GetRoleByIdAndUser(_db, requestRole.ID);
+        //         CbesRole oldRole = CbesRole.GetRoleByIdAndUser(_db, requestRole.Id);
 
-                if (oldRole == null)
-                {
-                    return NotFound(new Response
-                    {
-                        Status = 404,
-                        Message = "Role not found"
-                    });
-                }
+        //         if (oldRole == null)
+        //         {
+        //             return NotFound(new Response
+        //             {
+        //                 Status = 404,
+        //                 Message = "Role not found"
+        //             });
+        //         }
 
-                if (requestRole.Permissions == null || requestRole.Permissions.Count == 0)
-                {
-                    // ถ้าไม่มีผู้ใช้ใน requestRole.Users ให้ตั้งค่า IsDeleted เป็น true สำหรับผู้ใช้ทั้งหมด
-                    foreach (var userRole in oldRole.CbesUserWithRoles)
-                    {
-                        userRole.IsDeleted = true;
-                        userRole.UpdateBy = userClaims;
-                        userRole.UpdateDate = DateTime.UtcNow;
-                    }
-                }
-                else
-                {
-                    foreach (var u in requestRole.Permissions)
-                    {
-                        // ค้นหาผู้ใช้ที่มีอยู่ใน oldRole.CbesUserWithRoles
-                        CbesUserWithRole? existingUserRole = oldRole.CbesUserWithRoles.FirstOrDefault(ur => ur.UserId == u.Id);
+        //         if (requestRole.Permission == null || requestRole.Permission.Count == 0)
+        //         {
+        //             // ถ้าไม่มีผู้ใช้ใน requestRole.Users ให้ตั้งค่า IsDeleted เป็น true สำหรับผู้ใช้ทั้งหมด
+        //             foreach (var userRole in oldRole.CbesUserWithRoles)
+        //             {
+        //                 userRole.IsDeleted = true;
+        //                 userRole.UpdateBy = userClaims;
+        //                 userRole.UpdateDate = DateTime.UtcNow;
+        //             }
+        //         }
+        //         else
+        //         {
+        //             foreach (var u in requestRole.Permission)
+        //             {
+        //                 // ค้นหาผู้ใช้ที่มีอยู่ใน oldRole.CbesUserWithRoles
+        //                 CbesUserWithRole? existingUserRole = oldRole.CbesUserWithRoles.FirstOrDefault(ur => ur.UserId == u.Id);
 
-                        if (existingUserRole != null)
-                        {
-                            // ถ้ามีอยู่แล้วอัปเดต isDeleted
-                            existingUserRole.UpdateBy = userClaims;
-                            existingUserRole.UpdateDate = DateTime.UtcNow;
-                        }
-                        else
-                        {
-                            // ถ้าไม่มี สร้างใหม่
-                            CbesUserWithRole userRole = new CbesUserWithRole
-                            {
-                                UserId = u.Id,
-                                RoleId = oldRole.Id,
-                                IsDeleted = false,
-                                CreateBy = userClaims,
-                                UpdateBy = userClaims,
-                                CreateDate = DateTime.UtcNow,
-                                UpdateDate = DateTime.UtcNow,
-                            };
+        //                 if (existingUserRole != null)
+        //                 {
+        //                     // ถ้ามีอยู่แล้วอัปเดต isDeleted
+        //                     existingUserRole.UpdateBy = userClaims;
+        //                     existingUserRole.UpdateDate = DateTime.UtcNow;
+        //                 }
+        //                 else
+        //                 {
+        //                     // ถ้าไม่มี สร้างใหม่
+        //                     CbesUserWithRole userRole = new CbesUserWithRole
+        //                     {
+        //                         UserId = u.Id,
+        //                         RoleId = oldRole.Id,
+        //                         IsDeleted = false,
+        //                         CreateBy = userClaims,
+        //                         UpdateBy = userClaims,
+        //                         CreateDate = DateTime.UtcNow,
+        //                         UpdateDate = DateTime.UtcNow,
+        //                     };
 
-                            oldRole.CbesUserWithRoles.Add(userRole);
-                        }
-                    }
-                }
+        //                     oldRole.CbesUserWithRoles.Add(userRole);
+        //                 }
+        //             }
+        //         }
 
-                _db.SaveChanges();
+        //         _db.SaveChanges();
 
-                return Ok(new Response
-                {
-                    Status = 201,
-                    Message = "Users with Role Saved",
-                    Data = oldRole
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new Response
-                {
-                    Status = 500,
-                    Message = $"Error: {ex.Message}",
-                    Data = null,
-                });
-            }
-        }
+        //         return Ok(new Response
+        //         {
+        //             Status = 201,
+        //             Message = "Users with Role Saved",
+        //             Data = oldRole
+        //         });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return BadRequest(new Response
+        //         {
+        //             Status = 500,
+        //             Message = $"Error: {ex.Message}",
+        //             Data = null,
+        //         });
+        //     }
+        // }
 
 
         [HttpGet("bin", Name = "GetRoleBin")]
