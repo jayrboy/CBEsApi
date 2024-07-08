@@ -8,5 +8,9 @@ namespace CBEsApi.Dtos.CBEsRole
         public int? RoleId { get; set; }
         public int? PermissionId { get; set; }
         public PermissionDto Permission { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public int? CreateBy { get; set; }
+        public int? UpdateBy { get; set; }
     }
 }

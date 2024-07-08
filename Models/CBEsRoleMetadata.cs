@@ -138,23 +138,18 @@ namespace CBEsApi.Models
         public static CbesRole Update(CbesManagementContext db, CbesRole cbeRole)
         {
             var existingRole = db.CbesRoles.Find(cbeRole.Id);
+
             if (existingRole == null)
             {
                 throw new ArgumentException("Role not found");
             }
 
+            // Update existingRole properties from cbeRole
             existingRole.Name = cbeRole.Name;
             existingRole.UpdateBy = cbeRole.UpdateBy;
             existingRole.UpdateDate = DateTime.Now;
             existingRole.IsDeleted = cbeRole.IsDeleted;
             existingRole.IsLastDelete = cbeRole.IsLastDelete;
-
-            // Clear existing permissions
-            existingRole.CbesRoleWithPermissions.Clear();
-            foreach (var rolePermission in cbeRole.CbesRoleWithPermissions)
-            {
-                existingRole.CbesRoleWithPermissions.Add(rolePermission);
-            }
 
             db.CbesRoles.Update(existingRole);
             db.SaveChanges();

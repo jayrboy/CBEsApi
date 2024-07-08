@@ -144,11 +144,15 @@ namespace CBEsApi.Controllers
         ///     
         /// </remarks>
         [HttpPut(Name = "PutRolePermission")]
-        public ActionResult<Response> PutRolePermission(CbesRoleDto roleUpdate)
+        public ActionResult<Response> PutRolePermission(CbesRoleDto updateRole)
         {
-            CbesRole role = CbesRole.GetById(_db, roleUpdate.Id);
+            var userClaimsString = User.FindFirst("ID")?.Value;
+            int userClaims = Convert.ToInt32(userClaimsString);
 
-            if (role == null)
+            // Fetch role as CbesRole
+            CbesRole existingRole = CbesRole.GetById(_db, updateRole.Id);
+
+            if (existingRole == null)
             {
                 return NotFound(new Response
                 {
@@ -157,32 +161,36 @@ namespace CBEsApi.Controllers
                 });
             }
 
-            // role.Name = roleUpdate.Name;
-            role.UpdateBy = roleUpdate.UpdateBy;
-            role.UpdateDate = DateTime.Now;
+            existingRole.Name = updateRole.Name;
+            existingRole.UpdateBy = userClaims;
+            existingRole.UpdateDate = DateTime.Now;
 
-            role.CbesRoleWithPermissions.Clear();
-            foreach (var p in roleUpdate.CbesRoleWithPermissions)
+            // Update existing permissions
+            foreach (var permission in updateRole.CbesRoleWithPermissions)
             {
-                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
-                {
-                    IsChecked = true,
-                    CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now,
-                    IsDeleted = false,
-                    PermissionId = p.Id,
-                };
+                var existingPermission = existingRole.CbesRoleWithPermissions
+                    .FirstOrDefault(p => p.PermissionId == permission.PermissionId);
 
-                role.CbesRoleWithPermissions.Add(rolePermissions);
+                if (existingPermission != null)
+                {
+                    // Update existing permission
+                    existingPermission.IsChecked = permission.IsChecked;
+                    existingPermission.UpdateDate = DateTime.Now;
+                    existingPermission.UpdateBy = userClaims;
+
+                    // Set RoleId for the permission (assuming existingRole.Id is correct)
+                    existingPermission.RoleId = existingRole.Id;
+                }
             }
 
-            role = CbesRole.Update(_db, role);
+            // Save updates to the database
+            existingRole = CbesRole.Update(_db, existingRole);
 
             return Ok(new Response
             {
                 Status = 200,
                 Message = "Role and Permissions Updated",
-                Data = role
+                Data = existingRole
             });
         }
 
