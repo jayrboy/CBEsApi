@@ -1,3 +1,5 @@
+using CBEsApi.Models;
+
 namespace CBEsApi.Dtos.CBEsRole
 {
     public class CbesRoleDto
@@ -10,5 +12,6 @@ namespace CBEsApi.Dtos.CBEsRole
         public int? CreateBy { get; set; }
         public int? UpdateBy { get; set; }
         public List<CbesRoleWithPermissionDto>? CbesRoleWithPermissions { get; set; }
+        public List<CbesRoleUserDto>? CbesUserWithRole { get; set; }
     }
 }

@@ -19,13 +19,21 @@ namespace CBEsApi.Models
             return roles;
         }
 
-        //TODO: Get Role and Permissions
-        public static CbesRoleDto GetRolePermissions(CbesManagementContext db, int id)
+        //TODO: Get Role Permissions and Users
+        public static CbesRoleDto GetRole(CbesManagementContext db, int id)
         {
-            CbesRole? role = db.CbesRoles.Where(q => q.Id == id && q.IsDeleted != true)
-                                         .Include(q => q.CbesRoleWithPermissions)
-                                          .ThenInclude((q) => q.Permission)
-                                         .FirstOrDefault();
+            CbesRole? role = db.CbesRoles
+                                .Where(q => q.Id == id && q.IsDeleted != true)
+                                .Include(q => q.CbesRoleWithPermissions)
+                                    .ThenInclude((q) => q.Permission)
+                                .Include(q => q.CbesUserWithRoles)
+                                    .ThenInclude((q) => q.User)
+                                .FirstOrDefault();
+
+            if (role == null)
+            {
+                return new CbesRoleDto();
+            }
 
             CbesRoleDto roleDto = new CbesRoleDto
             {
@@ -37,22 +45,42 @@ namespace CBEsApi.Models
                 CreateBy = role.CreateBy,
                 UpdateBy = role.UpdateBy,
                 CbesRoleWithPermissions = role.CbesRoleWithPermissions
-                                    .Select(p => new CbesRoleWithPermissionDto
-                                    {
-                                        Id = p.Id,
-                                        IsChecked = p.IsChecked,
-                                        IsDeleted = p.IsDeleted,
-                                        RoleId = p.RoleId,
-                                        PermissionId = p.PermissionId,
-                                        Permission = new PermissionDto
-                                        {
-                                            Id = p.Permission.Id,
-                                            Name = p.Permission.Name,
-                                        }
-                                    }).ToList()
+                                            .Select(p => new CbesRoleWithPermissionDto
+                                            {
+                                                Id = p.Id,
+                                                IsChecked = p.IsChecked,
+                                                IsDeleted = p.IsDeleted,
+                                                RoleId = p.RoleId,
+                                                PermissionId = p.PermissionId,
+                                                Permission = new PermissionDto
+                                                {
+                                                    Id = p.Permission.Id,
+                                                    Name = p.Permission.Name,
+                                                },
+                                                CreateDate = p.CreateDate,
+                                                UpdateDate = p.UpdateDate,
+                                                CreateBy = p.CreateBy,
+                                                UpdateBy = p.UpdateBy
+                                            }).ToList(),
+                CbesUserWithRole = role.CbesUserWithRoles.Select(user => new CbesRoleUserDto
+                {
+                    ID = user.Id,
+                    IsDeleted = user.IsDeleted,
+                    Users = new UserDto
+                    {
+                        Id = user.Id,
+                        Fullname = user.User.Fullname,
+                        Username = user.User.Username,
+                        IsDeleted = user.IsDeleted,
+                    }
+                }).ToList()
+
             };
+
             return roleDto;
         }
+
+
 
         public static CbesRole Create(CbesManagementContext db, CbesRole cbeRole)
         {
@@ -125,6 +153,7 @@ namespace CBEsApi.Models
         {
             var role = db.CbesRoles
                          .Include(q => q.CbesRoleWithPermissions)
+                          .ThenInclude((q) => q.Permission)
                          .FirstOrDefault(q => q.Id == roleId);
 
             if (role == null)
