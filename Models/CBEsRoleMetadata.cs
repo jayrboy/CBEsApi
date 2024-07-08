@@ -66,6 +66,10 @@ namespace CBEsApi.Models
                 {
                     ID = user.Id,
                     IsDeleted = user.IsDeleted,
+                    CreateDate = user.CreateDate,
+                    UpdateDate = user.UpdateDate,
+                    CreateBy = user.CreateBy,
+                    UpdateBy = user.UpdateBy,
                     Users = new UserDto
                     {
                         Id = user.Id,
