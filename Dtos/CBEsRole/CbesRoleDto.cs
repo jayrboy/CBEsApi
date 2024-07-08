@@ -9,6 +9,6 @@ namespace CBEsApi.Dtos.CBEsRole
         public bool? IsLastDelete { get; set; }
         public int? CreateBy { get; set; }
         public int? UpdateBy { get; set; }
-        public List<CbesRoleWithPermissionDto>? CbesRoleWithPermission { get; set; }
+        public List<CbesRoleWithPermissionDto>? CbesRoleWithPermissions { get; set; }
     }
 }

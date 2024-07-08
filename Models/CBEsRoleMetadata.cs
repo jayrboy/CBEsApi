@@ -19,8 +19,8 @@ namespace CBEsApi.Models
             return roles;
         }
 
-        //TODO:
-        public static CbesRoleDto GetById(CbesManagementContext db, int id)
+        //TODO: Get Role and Permissions
+        public static CbesRoleDto GetRolePermissions(CbesManagementContext db, int id)
         {
             CbesRole? role = db.CbesRoles.Where(q => q.Id == id && q.IsDeleted != true)
                                          .Include(q => q.CbesRoleWithPermissions)
@@ -36,7 +36,7 @@ namespace CBEsApi.Models
                 IsLastDelete = role.IsLastDelete,
                 CreateBy = role.CreateBy,
                 UpdateBy = role.UpdateBy,
-                CbesRoleWithPermission = role.CbesRoleWithPermissions
+                CbesRoleWithPermissions = role.CbesRoleWithPermissions
                                     .Select(p => new CbesRoleWithPermissionDto
                                     {
                                         Id = p.Id,
@@ -121,11 +121,11 @@ namespace CBEsApi.Models
             return roles;
         }
 
-        public static CbesRole Get(CbesManagementContext db, int roleId)
+        public static CbesRole GetById(CbesManagementContext db, int roleId)
         {
             var role = db.CbesRoles
-                         .Include(r => r.CbesRoleWithPermissions)
-                         .FirstOrDefault(r => r.Id == roleId);
+                         .Include(q => q.CbesRoleWithPermissions)
+                         .FirstOrDefault(q => q.Id == roleId);
 
             if (role == null)
             {

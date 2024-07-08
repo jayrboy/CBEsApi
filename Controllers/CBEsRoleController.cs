@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace CBEsApi.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CBEsRoleController : ControllerBase
@@ -44,7 +44,7 @@ namespace CBEsApi.Controllers
         [HttpGet("{id}", Name = "GetRole")]
         public ActionResult<Response> GetRole(int id)
         {
-            CbesRoleDto role = CbesRole.GetById(_db, id);
+            CbesRoleDto role = CbesRole.GetRolePermissions(_db, id);
 
             return Ok(new Response
             {
@@ -61,53 +61,65 @@ namespace CBEsApi.Controllers
         ///     
         ///     {
         ///         "name": "บทบาททดสอบ",
-        ///         "permissions": [
+        ///         "createBy": 1,
+        ///         "updateBy": 2,
+        ///         "cbesRoleWithPermission": [
         ///             {
-        ///                 "id": 1
+        ///                 "isCheck": true,
+        ///                 "roleId": = 1,
+        ///                 "permissionId: 1,
+        ///                 "permission": { "id": 1, "name": "กำหนดสิทธิ์การใช้งานระบบ และกลุ่มผู้ใช้งาน"}
         ///             },
         ///             {
-        ///                 "id": 3
+        ///                 "isCheck": true,
+        ///                 "roleId": = 1,
+        ///                 "permissionId: 2,
+        ///                 "permission": { "id": 2, "name": "ประวัติการใช้งาน"}
         ///             }
-        ///         ],
-        ///         "createBy": 1,
-        ///         "updateBy": 1
+        ///         ]
         ///     }
         ///     
         /// </remarks>
-        // [HttpPost(Name = "PostRolePermission")]
-        // public ActionResult<Response> PostRolePermission(CbesRolePermissionDto roleCreate)
-        // {
-        //     CbesRole role = new CbesRole
-        //     {
-        //         Name = roleCreate.Name,
-        //         CreateBy = roleCreate.CreateBy,
-        //         UpdateBy = roleCreate.UpdateBy,
-        //     };
+        [HttpPost(Name = "PostRolePermission")]
+        public ActionResult<Response> PostRolePermission(CbesRoleDto createRole)
+        {
+            var userClaimsString = User.FindFirst("ID")?.Value;
+            int userClaims = Convert.ToInt32(userClaimsString);
 
-        //     foreach (var p in roleCreate.CbesRoleWithPermissions)
-        //     {
-        //         CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
-        //         {
-        //             IsChecked = true,
-        //             CreateDate = DateTime.Now,
-        //             UpdateDate = DateTime.Now,
-        //             IsDeleted = false,
-        //             PermissionId = p.ID,
-        //         };
+            CbesRole role = new CbesRole
+            {
+                Name = createRole.Name,
+                CreateBy = userClaims,
+                UpdateBy = userClaims,
+            };
 
-        //         role.CbesRoleWithPermissions.Add(rolePermissions);
-        //     }
+            foreach (var p in createRole.CbesRoleWithPermissions)
+            {
+                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
+                {
+                    IsChecked = p.IsChecked,
+                    CreateDate = DateTime.Now,
+                    UpdateDate = DateTime.Now,
+                    RoleId = role.Id, // This will be updated after saving role
+                    IsDeleted = false,
+                    PermissionId = p.PermissionId,
+                    CreateBy = userClaims,
+                    UpdateBy = userClaims,
 
+                };
 
-        //     role = CbesRole.Create(_db, role);
+                role.CbesRoleWithPermissions.Add(rolePermissions);
+            }
 
-        //     return Ok(new Response
-        //     {
-        //         Status = 201,
-        //         Message = "Role and Permissions Saved",
-        //         Data = role
-        //     });
-        // }
+            role = CbesRole.Create(_db, role);
+
+            return Ok(new Response
+            {
+                Status = 201,
+                Message = "Role and Permissions Saved",
+                Data = role
+            });
+        }
 
 
         /// <remarks>
@@ -131,47 +143,48 @@ namespace CBEsApi.Controllers
         ///     }
         ///     
         /// </remarks>
-        // [HttpPut(Name = "PutRolePermission")]
-        // public ActionResult<Response> PutRolePermission(CbesRolePermissionDto roleUpdate)
-        // {
-        //     CbesRole role = CbesRole.Get(_db, roleUpdate.Id);
-        //     if (role == null)
-        //     {
-        //         return NotFound(new Response
-        //         {
-        //             Status = 404,
-        //             Message = "Role not found",
-        //         });
-        //     }
+        [HttpPut(Name = "PutRolePermission")]
+        public ActionResult<Response> PutRolePermission(CbesRoleDto roleUpdate)
+        {
+            CbesRole role = CbesRole.GetById(_db, roleUpdate.Id);
 
-        //     // role.Name = roleUpdate.Name;
-        //     role.UpdateBy = roleUpdate.UpdateBy;
-        //     role.UpdateDate = DateTime.Now;
+            if (role == null)
+            {
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "Role not found",
+                });
+            }
 
-        //     role.CbesRoleWithPermissions.Clear();
-        //     foreach (var p in roleUpdate.Permission)
-        //     {
-        //         CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
-        //         {
-        //             IsChecked = true,
-        //             CreateDate = DateTime.Now,
-        //             UpdateDate = DateTime.Now,
-        //             IsDeleted = false,
-        //             PermissionId = p.Id,
-        //         };
+            // role.Name = roleUpdate.Name;
+            role.UpdateBy = roleUpdate.UpdateBy;
+            role.UpdateDate = DateTime.Now;
 
-        //         role.CbesRoleWithPermissions.Add(rolePermissions);
-        //     }
+            role.CbesRoleWithPermissions.Clear();
+            foreach (var p in roleUpdate.CbesRoleWithPermissions)
+            {
+                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
+                {
+                    IsChecked = true,
+                    CreateDate = DateTime.Now,
+                    UpdateDate = DateTime.Now,
+                    IsDeleted = false,
+                    PermissionId = p.Id,
+                };
 
-        //     role = CbesRole.Update(_db, role);
+                role.CbesRoleWithPermissions.Add(rolePermissions);
+            }
 
-        //     return Ok(new Response
-        //     {
-        //         Status = 200,
-        //         Message = "Role and Permissions Updated",
-        //         Data = role
-        //     });
-        // }
+            role = CbesRole.Update(_db, role);
+
+            return Ok(new Response
+            {
+                Status = 200,
+                Message = "Role and Permissions Updated",
+                Data = role
+            });
+        }
 
         [HttpDelete("delete/{id}", Name = "DeleteRole")]
         public ActionResult DeleteRole(int id)
