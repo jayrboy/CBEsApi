@@ -100,17 +100,19 @@ namespace CBEsApi.Models
         }
 
 
-        public static CbesRole Create(CbesManagementContext db, CbesRole cbeRole)
+        public static CbesRole Create(CbesManagementContext db, CbesRole role)
         {
-            cbeRole.CreateDate = DateTime.Now;
-            cbeRole.UpdateDate = DateTime.Now;
-            cbeRole.IsDeleted = false;
-            cbeRole.IsLastDelete = false;
-
-            db.CbesRoles.Add(cbeRole);
+            db.CbesRoles.Add(role);
             db.SaveChanges();
 
-            return cbeRole;
+            // Update RoleId in permissions after saving the role
+            foreach (var permission in role.CbesRoleWithPermissions)
+            {
+                permission.RoleId = role.Id;
+            }
+            db.SaveChanges();
+
+            return role;
         }
 
         public static CbesRole GetRoleByIdAndUser(CbesManagementContext db, int id)

@@ -87,29 +87,39 @@ namespace CBEsApi.Controllers
             var userClaimsString = User.FindFirst("ID")?.Value;
             int userClaims = Convert.ToInt32(userClaimsString);
 
+            // Create new role
             CbesRole role = new CbesRole
             {
                 Name = createRole.Name,
                 CreateBy = userClaims,
                 UpdateBy = userClaims,
+                CreateDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
+                IsDeleted = createRole.IsDeleted,
+                IsLastDelete = createRole.IsLastDelete,
             };
 
-            foreach (var p in createRole.CbesRoleWithPermissions)
+            // Define a list of all possible permissions (assuming permission IDs are from 1 to 8)
+            var allPermissions = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+            // Add permissions to the role
+            foreach (var permissionId in allPermissions)
             {
-                CbesRoleWithPermission rolePermissions = new CbesRoleWithPermission
+                var permission = createRole.CbesRoleWithPermissions.FirstOrDefault(p => p.PermissionId == permissionId);
+                bool isChecked = permission?.IsChecked ?? false;
+
+                CbesRoleWithPermission rolePermission = new CbesRoleWithPermission
                 {
-                    IsChecked = p.IsChecked,
+                    IsChecked = isChecked,
                     CreateDate = DateTime.Now,
                     UpdateDate = DateTime.Now,
-                    RoleId = role.Id, // This will be updated after saving role
                     IsDeleted = false,
-                    PermissionId = p.PermissionId,
+                    PermissionId = permissionId,
                     CreateBy = userClaims,
                     UpdateBy = userClaims,
-
                 };
 
-                role.CbesRoleWithPermissions.Add(rolePermissions);
+                role.CbesRoleWithPermissions.Add(rolePermission);
             }
 
             role = CbesRole.Create(_db, role);
