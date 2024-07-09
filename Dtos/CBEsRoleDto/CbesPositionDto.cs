@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CBEsApi.Dtos.CBEsRole
+namespace CBEsApi.Dtos.CBEsRoleDto
 {
     public class CbesPositionDto
     {

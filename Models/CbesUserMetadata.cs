@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CBEsApi.Data;
-using CBEsApi.Dtos.CBEsRole;
+using CBEsApi.Dtos.CBEsRoleDto;
 using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Models
@@ -22,7 +22,6 @@ namespace CBEsApi.Models
             return user;
         }
 
-        //Get All Action
         //Get All Action
         public static List<CbesUserDto> GetAll(CbesManagementContext db)
         {

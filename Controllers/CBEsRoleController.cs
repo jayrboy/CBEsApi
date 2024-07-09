@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CBEsApi.Data;
 using CBEsApi.Models;
-using CBEsApi.Dtos.CBEsRole;
+using CBEsApi.Dtos.CBEsRoleDto;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 

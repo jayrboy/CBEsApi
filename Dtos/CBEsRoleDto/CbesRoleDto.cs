@@ -1,6 +1,6 @@
 using CBEsApi.Models;
 
-namespace CBEsApi.Dtos.CBEsRole
+namespace CBEsApi.Dtos.CBEsRoleDto
 {
     public class CbesRoleDto
     {

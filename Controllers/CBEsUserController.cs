@@ -1,5 +1,5 @@
 using CBEsApi.Data;
-using CBEsApi.Dtos.CBEsRole;
+using CBEsApi.Dtos.CBEsRoleDto;
 using CBEsApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
