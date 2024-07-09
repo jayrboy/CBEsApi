@@ -39,8 +39,8 @@ namespace CBEsApi.Models
                                 .Where(q => q.Id == id && q.IsDeleted != true)
                                 .Include(q => q.CbesRoleWithPermissions)
                                     .ThenInclude((q) => q.Permission)
-                                .Include(q => q.CbesUserWithRoles)
-                                    .ThenInclude((q) => q.User)
+                                .Include(q => q.CbesUserWithRoles.Where(a => a.IsDeleted != true))
+                                    .ThenInclude((q) => q.User).Where(a => a.IsDeleted != true)
                                 .FirstOrDefault();
 
             if (role == null)
@@ -75,22 +75,22 @@ namespace CBEsApi.Models
                                                 CreateBy = p.CreateBy,
                                                 UpdateBy = p.UpdateBy
                                             }).ToList(),
-                CbesUserWithRole = role.CbesUserWithRoles.Select(user => new CbesUserWithRoleDto
+                CbesUserWithRole = role.CbesUserWithRoles.Select(u => new CbesUserWithRoleDto
                 {
-                    ID = user.Id,
-                    IsDeleted = user.IsDeleted,
-                    CreateDate = user.CreateDate,
-                    UpdateDate = user.UpdateDate,
-                    CreateBy = user.CreateBy,
-                    UpdateBy = user.UpdateBy,
-                    RoleId = user.RoleId,
-                    UserId = user.UserId,
+                    ID = u.Id,
+                    IsDeleted = u.IsDeleted,
+                    CreateDate = u.CreateDate,
+                    UpdateDate = u.UpdateDate,
+                    CreateBy = u.CreateBy,
+                    UpdateBy = u.UpdateBy,
+                    RoleId = u.RoleId,
+                    UserId = u.UserId,
                     User = new CbesUserDto
                     {
-                        Id = user.Id,
-                        Fullname = user.User.Fullname,
-                        Username = user.User.Username,
-                        IsDeleted = user.IsDeleted,
+                        Id = u.User.Id,
+                        Fullname = u.User.Fullname,
+                        Username = u.User.Username,
+                        IsDeleted = u.User.IsDeleted,
                     }
                 }).ToList()
 

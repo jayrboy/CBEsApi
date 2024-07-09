@@ -6,6 +6,7 @@ using CBEsApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using CBEsApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Controllers;
 
@@ -115,34 +116,76 @@ public class AuthorizationController : ControllerBase
     ///     
     /// </remarks>
     [HttpPost("Login", Name = "Login")]
-    public IActionResult Login([FromBody] RequestCreate request)
+    public ActionResult Login([FromBody] RequestCreate request)
     {
-        CbesUser? user = _db.CbesUsers.FirstOrDefault(doc => doc.Username == request.Username && doc.Password == request.Password && doc.IsDeleted == false);
+        CbesUser user = _db.CbesUsers.FirstOrDefault(doc => doc.Username == request.Username && doc.IsDeleted == false);
 
-        if (user == null)
+        // Check if user is locked out due to consecutive failed login attempts
+        if (user.IsLog == false && user.LoginFailedCount >= 5)
         {
-            return BadRequest(new Response
+            // If the user is still within the lockout period
+            if (user.LoginDate != null && user.LoginDate.Value.AddMinutes(5) > DateTime.UtcNow)
             {
-                Status = 400,
-                Message = "Bad Request to Username & Password",
-                Data = null
+                TimeSpan timeToWait = user.LoginDate.Value.AddMinutes(5) - DateTime.UtcNow;
+                int secondsToWait = (int)Math.Ceiling(timeToWait.TotalSeconds);
+
+                return StatusCode(429, new Response
+                {
+                    Status = 429,
+                    Message = $"ผู้ใช้ถูก Block เนื่องจากกรอกข้อมูลผิดต่อเนื่อง {user.LoginFailedCount}/5 ครั้ง โปรดลองอีกครั้งในภายหลัง (รออีก {secondsToWait} วินาที)",
+                    Data = null
+                });
             }
-            );
+
+            // If the lockout period has passed, reset failed attempts and unlock the account
+            if (user.LoginDate.Value.AddMinutes(5) <= DateTime.UtcNow)
+            {
+                user.IsLog = true;
+                user.LoginFailedCount = 0;
+
+                _db.Entry(user).State = EntityState.Modified;
+                _db.SaveChanges();
+            }
+
+
+            // Successful login
+            string bearerToken = GenerateToken(user);
+
+            return Ok(new Response
+            {
+                Status = 200,
+                Message = "Login Success",
+                Data = new
+                {
+                    token = bearerToken,
+                }
+            });
         }
 
-        string bearerToken = GenerateToken(user);
 
-        return Ok(new Response
+        // If password is incorrect, increment login failed count and save changes
+        if (user.Password != request.Password)
         {
-            Status = 200,
-            Message = "Login Success",
-            Data = new
+            user.LoginFailedCount = user.LoginFailedCount + 1;
+            user.LoginDate = DateTime.UtcNow;
+
+            // Check if login failed count exceeds limit
+            if (user.LoginFailedCount >= 5)
             {
-                token = bearerToken,
+                user.IsLog = false;
             }
+
+            _db.Entry(user).State = EntityState.Modified;
+            _db.SaveChanges();
+        }
+
+        return BadRequest(new Response
+        {
+            Status = 401,
+            Message = "Unauthorized to Password",
+            Data = null
         });
     }
-
 
 
     [HttpPost("Register", Name = "Register")]
