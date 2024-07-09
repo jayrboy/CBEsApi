@@ -45,7 +45,7 @@ namespace CBEsApi.Controllers
         [HttpGet("{id}", Name = "GetRole")]
         public ActionResult<Response> GetRole(int id)
         {
-            CbesRoleDto role = CbesRole.GetRole(_db, id);
+            CbesRoleDto role = CbesRole.GetById(_db, id);
 
             return Ok(new Response
             {
@@ -192,10 +192,10 @@ namespace CBEsApi.Controllers
         ///         "updateBy": 1,
         ///         "cbesRoleWithPermissions": [
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 25,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
-        ///                 "roleId": 0,
+        ///                 "roleId": 4,
         ///                 "permissionId": 1,
         ///                 "permission": {
         ///                     "id": 1,
@@ -207,10 +207,10 @@ namespace CBEsApi.Controllers
         ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 26,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
-        ///                 "roleId": 0,
+        ///                 "roleId": 4,
         ///                 "permissionId": 2,
         ///                 "permission": { "id": 2, "name": "ประวัติการใช้งาน" },
         ///                 "createDate": "2024-07-05T09:53:46.533",
@@ -219,10 +219,10 @@ namespace CBEsApi.Controllers
         ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 27,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
-        ///                 "roleId": 0,
+        ///                 "roleId": 4,
         ///                 "permissionId": 3,
         ///                 "permission": { "id": 3, "name": "จัดการหลักเกณฑ์ CBEs" },
         ///                 "createDate": "2024-07-05T09:53:46.533",
@@ -231,10 +231,10 @@ namespace CBEsApi.Controllers
         ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 28,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
-        ///                 "roleId": 0,
+        ///                 "roleId": 4,
         ///                 "permissionId": 4,
         ///                 "permission": { "id": 4, "name": "จัดการแผนวิสาหกิจ" },
         ///                 "createDate": "2024-07-05T09:53:46.533",
@@ -243,10 +243,10 @@ namespace CBEsApi.Controllers
         ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 29,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
-        ///                 "roleId": 0,
+        ///                 "roleId": 4,
         ///                 "permissionId": 5,
         ///                 "permission": { "id": 5, "name": "จัดการแผนแม่บท" },
         ///                 "createDate": "2024-07-05T09:53:46.533",
@@ -255,10 +255,10 @@ namespace CBEsApi.Controllers
         ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 30,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
-        ///                 "roleId": 0,
+        ///                 "roleId": 4,
         ///                 "permissionId": 6,
         ///                 "permission": { "id": 6, "name": "เป้าตัวชี้วัด-ผลตามตัวชี้วัดที่สำคัญขององค์" },
         ///                 "createDate": "2024-07-05T09:53:46.533",
@@ -267,7 +267,7 @@ namespace CBEsApi.Controllers
         ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 31,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
         ///                 "roleId": 0,
@@ -279,10 +279,10 @@ namespace CBEsApi.Controllers
         ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 0,
+        ///                 "id": 32,
         ///                 "isChecked": false,
         ///                 "isDeleted": false,
-        ///                 "roleId": 0,
+        ///                 "roleId": 4,
         ///                 "permissionId": 8,
         ///                 "permission": { "id": 8, "name": "รายงานผลการดำเนินงานที่ได้รับ" },
         ///                 "createDate": "2024-07-05T09:53:46.533",
@@ -306,7 +306,9 @@ namespace CBEsApi.Controllers
             int userClaims = Convert.ToInt32(userClaimsString);
 
             // Fetch role as CbesRole
-            CbesRole existingRole = CbesRole.GetById(_db, updateRole.Id);
+            CbesRole? existingRole = _db.CbesRoles
+                .Include(r => r.CbesRoleWithPermissions) // Ensure permissions are loaded
+                .FirstOrDefault(r => r.Id == updateRole.Id);
 
             if (existingRole == null)
             {
@@ -322,25 +324,44 @@ namespace CBEsApi.Controllers
             existingRole.UpdateDate = DateTime.Now;
 
             // Update existing permissions
-            foreach (var permission in updateRole.CbesRoleWithPermissions)
+            foreach (var permissionDto in updateRole.CbesRoleWithPermissions)
             {
                 var existingPermission = existingRole.CbesRoleWithPermissions
-                    .FirstOrDefault(p => p.PermissionId == permission.PermissionId);
+                    .FirstOrDefault(p => p.Id == permissionDto.Id);
 
                 if (existingPermission != null)
                 {
                     // Update existing permission
-                    existingPermission.IsChecked = permission.IsChecked;
+                    existingPermission.IsChecked = permissionDto.IsChecked;
                     existingPermission.UpdateDate = DateTime.Now;
                     existingPermission.UpdateBy = userClaims;
 
-                    // Update permissionId correctly
-                    existingPermission.PermissionId = permission.PermissionId;
+                    // Ensure correct RoleId assignment
+                    existingPermission.RoleId = existingRole.Id;
+                }
+                else
+                {
+                    // Handle if permission is not found (optional based on your business logic)
                 }
             }
 
-            // Save updates to the database
-            existingRole = CbesRole.Update(_db, existingRole);
+            try
+            {
+                // Save changes to the database
+                _db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // Handle concurrency issues
+                // Log the exception or handle as needed
+                throw new Exception("Concurrency error occurred while updating role.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                // Handle other update errors
+                // Log the exception or handle as needed
+                throw new Exception("Error occurred while updating role.", ex);
+            }
 
             return Ok(new Response
             {
@@ -360,7 +381,7 @@ namespace CBEsApi.Controllers
             try
             {
 
-                CbesRole cbe = CbesRole.Delete(_db, id, userClaims);
+                CbesRoleDto cbe = CbesRole.Delete(_db, id, userClaims);
 
                 return Ok(new Response
                 {
@@ -555,7 +576,7 @@ namespace CBEsApi.Controllers
             int userClaims = Convert.ToInt32(userClaimsString);
             try
             {
-                CbesRole cbe = CbesRole.cancelDelete(_db, request.ID, userClaims);
+                CbesRoleDto cbe = CbesRole.cancelDelete(_db, request.ID, userClaims);
 
                 return Ok(new Response
                 {
@@ -584,7 +605,7 @@ namespace CBEsApi.Controllers
 
             try
             {
-                CbesRole cbe = CbesRole.lastDelete(_db, id, userClaims);
+                CbesRoleDto cbe = CbesRole.lastDelete(_db, id, userClaims);
 
                 return Ok(new Response
                 {

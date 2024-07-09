@@ -33,7 +33,7 @@ namespace CBEsApi.Models
         }
 
         //TODO: Get Role Permissions and Users
-        public static CbesRoleDto GetRole(CbesManagementContext db, int id)
+        public static CbesRoleDto GetById(CbesManagementContext db, int id)
         {
             CbesRole? role = db.CbesRoles
                                 .Where(q => q.Id == id && q.IsDeleted != true)
@@ -99,7 +99,6 @@ namespace CBEsApi.Models
             return roleDto;
         }
 
-
         public static CbesRole Create(CbesManagementContext db, CbesRole role)
         {
             db.CbesRoles.Add(role);
@@ -115,56 +114,15 @@ namespace CBEsApi.Models
             return role;
         }
 
-        public static CbesRole GetRoleByIdAndUser(CbesManagementContext db, int id)
-        {
-            CbesRole? role = db.CbesRoles.Where(q => q.Id == id).Include((u) => u.CbesUserWithRoles).ThenInclude(q => q.User).FirstOrDefault();
-
-            if (role == null)
-            {
-                return null; // หรือส่งคืน CbesRoleDto ว่าง
-            }
-
-
-            return role;
-        }
-
         //  Delete ID
-        public static CbesRole Delete(CbesManagementContext db, int id, int updateBy)
+        public static CbesRoleDto Delete(CbesManagementContext db, int id, int updateBy)
         {
-            CbesRole cbe = GetRoleByIdAndUser(db, id);
+            CbesRoleDto cbe = GetById(db, id);
 
             cbe.UpdateDate = DateTime.Now;
             cbe.IsDeleted = true;
             cbe.UpdateBy = updateBy;
 
-            db.Entry(cbe).State = EntityState.Modified;
-            db.SaveChanges();
-
-            return cbe;
-        }
-
-        //  Cancel Delete ID
-        public static CbesRole cancelDelete(CbesManagementContext db, int id, int updateBy)
-        {
-            CbesRole cbe = GetRoleByIdAndUser(db, id);
-            cbe.UpdateDate = DateTime.Now;
-            cbe.IsDeleted = false;
-            cbe.UpdateBy = updateBy;
-
-            db.Entry(cbe).State = EntityState.Modified;
-            db.SaveChanges();
-
-            return cbe;
-        }
-        //  Last Delete ID
-        public static CbesRole lastDelete(CbesManagementContext db, int id, int updateBy)
-        {
-            CbesRole cbe = GetRoleByIdAndUser(db, id);
-            cbe.UpdateDate = DateTime.Now;
-            cbe.IsLastDelete = true;
-            cbe.UpdateBy = updateBy;
-
-            db.Entry(cbe).State = EntityState.Modified;
             db.SaveChanges();
 
             return cbe;
@@ -176,51 +134,32 @@ namespace CBEsApi.Models
             return roles;
         }
 
-        public static CbesRole GetById(CbesManagementContext db, int roleId)
+        //  Cancel Delete ID
+        public static CbesRoleDto cancelDelete(CbesManagementContext db, int id, int updateBy)
         {
-            var role = db.CbesRoles
-                         .Include(q => q.CbesRoleWithPermissions)
-                          .ThenInclude((q) => q.Permission)
-                         .FirstOrDefault(q => q.Id == roleId);
+            CbesRoleDto cbe = GetById(db, id);
+            cbe.UpdateDate = DateTime.Now;
+            cbe.IsDeleted = false;
+            cbe.UpdateBy = updateBy;
 
-            if (role == null)
-            {
-                throw new ArgumentException("Role not found");
-            }
+            db.SaveChanges();
 
-            return role;
+            return cbe;
         }
 
-        public static CbesRole Update(CbesManagementContext db, CbesRole role)
+        //  Last Delete ID
+        public static CbesRoleDto lastDelete(CbesManagementContext db, int id, int updateBy)
         {
-            // Attach role to the context if not already attached
-            if (!db.CbesRoles.Local.Any(r => r.Id == role.Id))
-            {
-                db.CbesRoles.Attach(role);
-            }
+            CbesRoleDto cbe = GetById(db, id);
+            cbe.UpdateDate = DateTime.Now;
+            cbe.IsLastDelete = true;
+            cbe.UpdateBy = updateBy;
 
-            // Update role information
-            db.Entry(role).State = EntityState.Modified;
+            db.SaveChanges();
 
-            try
-            {
-                // Save changes to the database
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                // Handle concurrency issues
-                // Log the exception or handle as needed
-                throw new Exception("Concurrency error occurred while updating role.", ex);
-            }
-            catch (DbUpdateException ex)
-            {
-                // Handle other update errors
-                // Log the exception or handle as needed
-                throw new Exception("Error occurred while updating role.", ex);
-            }
-
-            return role;
+            return cbe;
         }
+
+
     }
 }
