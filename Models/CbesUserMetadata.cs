@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CBEsApi.Data;
+using CBEsApi.Dtos.CBEsRole;
 using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Models
@@ -22,12 +23,22 @@ namespace CBEsApi.Models
         }
 
         //Get All Action
-        public static List<CbesUser> GetAll(CbesManagementContext db)
+        //Get All Action
+        public static List<CbesUserDto> GetAll(CbesManagementContext db)
         {
-            List<CbesUser> users = db.CbesUsers.Where(q => q.IsDeleted != true).ToList();
+            List<CbesUserDto> users = db.CbesUsers
+                                        .Where(q => q.IsDeleted != true)
+                                        .Select(u => new CbesUserDto
+                                        {
+                                            Id = u.Id,
+                                            Username = u.Username,
+                                            Fullname = u.Fullname,
+                                            IsDeleted = u.IsDeleted,
+                                            PositionId = u.Position.Id
+                                        })
+                                        .ToList();
             return users;
         }
-
         //Get ID Action
         public static CbesUser GetById(CbesManagementContext db, int id)
         {

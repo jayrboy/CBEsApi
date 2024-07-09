@@ -1,6 +1,6 @@
 namespace CBEsApi.Dtos.CBEsRole
 {
-    public class CbesRoleUserDto
+    public class CbesUserWithRoleDto
     {
         public int ID { get; set; }
         public DateTime? CreateDate { get; set; }
@@ -8,6 +8,8 @@ namespace CBEsApi.Dtos.CBEsRole
         public bool? IsDeleted { get; set; }
         public int? CreateBy { get; set; }
         public int? UpdateBy { get; set; }
-        public UserDto? Users { get; set; } // Change Users from List<UserDto> to UserDto
+        public int? RoleId { get; set; }
+        public int? UserId { get; set; }
+        public CbesUserDto? User { get; set; } // Change Users from List<UserDto> to UserDto
     }
 }

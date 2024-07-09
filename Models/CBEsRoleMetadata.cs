@@ -13,9 +13,21 @@ namespace CBEsApi.Models
     [MetadataType(typeof(CbesRoleMetadata))]
     public partial class CbesRole
     {
-        public static List<CbesRole> GetAll(CbesManagementContext db)
+        public static List<CbesRoleDto> GetAll(CbesManagementContext db)
         {
-            List<CbesRole> roles = db.CbesRoles.Where(q => q.IsDeleted != true).ToList();
+            List<CbesRoleDto> roles = db.CbesRoles
+                                        .Where(q => q.IsDeleted != true)
+                                        .Select(r => new CbesRoleDto
+                                        {
+                                            Id = r.Id,
+                                            Name = r.Name,
+                                            UpdateDate = r.UpdateDate,
+                                            IsDeleted = r.IsDeleted,
+                                            IsLastDelete = r.IsLastDelete,
+                                            CreateBy = r.CreateBy,
+                                            UpdateBy = r.UpdateBy,
+                                        })
+                                        .ToList();
             return roles;
         }
 
@@ -52,7 +64,7 @@ namespace CBEsApi.Models
                                                 IsDeleted = p.IsDeleted,
                                                 RoleId = p.RoleId,
                                                 PermissionId = p.PermissionId,
-                                                Permission = new PermissionDto
+                                                Permission = new CbesPermissionDto
                                                 {
                                                     Id = p.Permission.Id,
                                                     Name = p.Permission.Name,
@@ -62,7 +74,7 @@ namespace CBEsApi.Models
                                                 CreateBy = p.CreateBy,
                                                 UpdateBy = p.UpdateBy
                                             }).ToList(),
-                CbesUserWithRole = role.CbesUserWithRoles.Select(user => new CbesRoleUserDto
+                CbesUserWithRole = role.CbesUserWithRoles.Select(user => new CbesUserWithRoleDto
                 {
                     ID = user.Id,
                     IsDeleted = user.IsDeleted,
@@ -70,7 +82,9 @@ namespace CBEsApi.Models
                     UpdateDate = user.UpdateDate,
                     CreateBy = user.CreateBy,
                     UpdateBy = user.UpdateBy,
-                    Users = new UserDto
+                    RoleId = user.RoleId,
+                    UserId = user.UserId,
+                    User = new CbesUserDto
                     {
                         Id = user.Id,
                         Fullname = user.User.Fullname,
@@ -83,7 +97,6 @@ namespace CBEsApi.Models
 
             return roleDto;
         }
-
 
 
         public static CbesRole Create(CbesManagementContext db, CbesRole cbeRole)

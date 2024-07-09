@@ -2,7 +2,7 @@ using CBEsApi.Models;
 
 namespace CBEsApi.Dtos.CBEsRole
 {
-    public class PermissionDto
+    public class CbesPermissionDto
     {
         public int Id { get; set; }
 

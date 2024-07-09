@@ -5,6 +5,7 @@ using CBEsApi.Data;
 using CBEsApi.Models;
 using CBEsApi.Dtos.CBEsRole;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Controllers
 {
@@ -31,7 +32,7 @@ namespace CBEsApi.Controllers
         [HttpGet(Name = "GetRoles")]
         public ActionResult GetRoles()
         {
-            List<CbesRole> roles = CbesRole.GetAll(_db);
+            List<CbesRoleDto> roles = CbesRole.GetAll(_db);
 
             return Ok(new Response
             {
@@ -121,27 +122,61 @@ namespace CBEsApi.Controllers
             });
         }
 
+        /// <summary>
+        /// Update role with permissions.
+        /// </summary>
         /// <remarks>
-        /// Sample request:
-        /// 
-        ///     PUT /api/CBEsRole
-        ///     
+        /// ตัวอย่างของคำขอ:
+        ///
+        ///     PUT /api/CbesRole/PutRolePermission
         ///     {
-        ///         "id": 1,
+        ///         "id": 4,
         ///         "name": "บทบาททดสอบ",
-        ///         "permissions": [
+        ///         "updateDate": "2024-07-09T09:37:16.647",
+        ///         "isDeleted": false,
+        ///         "isLastDelete": false,
+        ///         "createBy": 1,
+        ///         "updateBy": 1,
+        ///         "cbesRoleWithPermissions": [
         ///             {
-        ///                 "id": 1
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 1,
+        ///                 "permission": {
+        ///                     "id": 1,
+        ///                     "name": "กำหนดสิทธิ์การใช้งานระบบ และกลุ่มผู้ใช้งาน"
+        ///                 },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
         ///             },
         ///             {
-        ///                 "id": 3
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 2,
+        ///                 "permission": {
+        ///                     "id": 2,
+        ///                     "name": "ประวัติการใช้งาน"
+        ///                 },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
         ///             }
-        ///         ],
-        ///         "createBy": 1,
-        ///         "updateBy": 1
+        ///         ]
         ///     }
-        ///     
         /// </remarks>
+        /// <param name="updateRole">Object บทบาทที่อัปเดตพร้อมกับสิทธิ์</param>
+        /// <returns>การตอบสนองที่บอกถึงความสำเร็จหรือความล้มเหลว</returns>
+        /// <response code="200">ส่งคืนบทบาทที่อัปเดตพร้อมกับสิทธิ์</response>
+        /// <response code="400">หากข้อมูลบทบาทหรือสิทธิ์ที่ให้มาไม่ถูกต้อง</response>
+        /// <response code="404">หากไม่พบบทบาทที่ระบุ</response>
+        /// <response code="500">หากเกิดข้อผิดพลาดภายในเซิร์ฟเวอร์</response>
         [HttpPut(Name = "PutRolePermission")]
         public ActionResult<Response> PutRolePermission(CbesRoleDto updateRole)
         {
@@ -219,91 +254,130 @@ namespace CBEsApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Update role with associated users and permissions.
+        /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
         ///     PUT /api/CBEsRole/RoleWithUsers
         ///     
         ///     {
-        ///         "id": 3,
-        ///         "name": "ผู้รายงานผล",
-        ///         "createDate": "2024-07-01T07:26:55.084Z",
-        ///         "updateDate": "2024-07-01T07:26:55.084Z",
+        ///         "id": 4,
+        ///         "name": "บทบาททดสอบ",
+        ///         "updateDate": "2024-07-09T09:37:16.647",
         ///         "isDeleted": false,
         ///         "isLastDelete": false,
         ///         "createBy": 1,
         ///         "updateBy": 1,
-        ///         "users": [
+        ///         "cbesRoleWithPermissions": [],
+        ///         "cbesUserWithRole": [
         ///             {
-        ///                 "id": 1,
-        ///                 "fullname": "จักรกฤษ อ่อนส้มกฤษ",
-        ///                 "username": "admin",
-        ///                 "isDeleted": false
+        ///                 "id": 0,
+        ///                 "createDate": "2024-07-09T03:12:38.430Z",
+        ///                 "updateDate": "2024-07-09T03:12:38.430Z",
+        ///                 "isDeleted": false,
+        ///                 "createBy": 0,
+        ///                 "updateBy": 0,
+        ///                 "roleId": 0,
+        ///                 "userId": 4,
+        ///                 "user": {
+        ///                     "id": 4,
+        ///                     "username": "natipong",
+        ///                     "fullname": "เนติพงษ์",
+        ///                     "isDeleted": false
+        ///                 }
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "createDate": "2024-07-09T03:12:40.800Z",
+        ///                 "updateDate": "2024-07-09T03:12:40.800Z",
+        ///                 "isDeleted": false,
+        ///                 "createBy": 0,
+        ///                 "updateBy": 0,
+        ///                 "roleId": 0,
+        ///                 "userId": 5,
+        ///                 "user": {
+        ///                     "id": 5,
+        ///                     "username": "chatchai",
+        ///                     "fullname": "ชัชชาติ",
+        ///                     "isDeleted": false
+        ///                 }
         ///             }
         ///         ]
         ///     }
         /// </remarks>
-        [HttpPut("RoleWithUsers", Name = "PutRoleWithPermissions")]
-        public ActionResult<Response> PutRoleWithPermissions(CbesManagementContext _db, CbesRoleDto updateRoleUsers)
+        /// <param name="_db">Database context</param>
+        /// <param name="updateRoleUsers">Updated role with users data</param>
+        /// <returns>Response with status and message</returns>
+        /// <response code="201">Users with Role Saved</response>
+        /// <response code="400">Invalid request data</response>
+        /// <response code="404">Role users not found</response>
+        /// <response code="500">Internal server error</response>
+        [HttpPut("RoleWithUsers", Name = "RoleUsers")]
+        public ActionResult<Response> RoleUsers(CbesManagementContext _db, CbesRoleDto updateRoleUsers)
         {
             try
             {
-                // ดึงค่า userClaims และแปลงเป็น int
                 var userClaimsString = User.FindFirst("ID")?.Value;
                 int userClaims = Convert.ToInt32(userClaimsString);
 
-                CbesRole oldRole = CbesRole.GetRoleByIdAndUser(_db, updateRoleUsers.Id);
+                // Get the old role including the associated users
+                CbesRole? oldRole = _db.CbesRoles
+                    .Include(r => r.CbesUserWithRoles)
+                    .ThenInclude(u => u.User)
+                    .FirstOrDefault(r => r.Id == updateRoleUsers.Id && r.IsDeleted != true);
 
                 if (oldRole == null)
                 {
                     return NotFound(new Response
                     {
                         Status = 404,
-                        Message = "Role not found"
+                        Message = "Role users not found",
+                        Data = null
                     });
                 }
 
-                if (updateRoleUsers.CbesRoleWithPermissions == null || updateRoleUsers.CbesRoleWithPermissions.Count == 0)
+
+                foreach (var user in updateRoleUsers.CbesUserWithRole)
                 {
-                    // ถ้าไม่มีผู้ใช้ใน updateRoleUsers.Users ให้ตั้งค่า IsDeleted เป็น true สำหรับผู้ใช้ทั้งหมด
-                    foreach (var userRole in oldRole.CbesUserWithRoles)
+
+                    if (user.User.Id == 0)
                     {
-                        userRole.IsDeleted = true;
-                        userRole.UpdateBy = userClaims;
-                        userRole.UpdateDate = DateTime.UtcNow;
+                        return BadRequest(new Response
+                        {
+                            Status = 400,
+                            Message = $"Invalid User ID: {user.User.Id}",
+                            Data = null,
+                        });
+                    }
+
+                    CbesUserWithRole? existingUserRole = oldRole.CbesUserWithRoles.FirstOrDefault(ur => ur.UserId == user.User.Id);
+
+                    if (existingUserRole != null)
+                    {
+                        existingUserRole.IsDeleted = user.IsDeleted;
+                        existingUserRole.UpdateBy = userClaims;
+                        existingUserRole.UpdateDate = DateTime.UtcNow;
+                        existingUserRole.RoleId = updateRoleUsers.Id;
+                    }
+                    else
+                    {
+                        CbesUserWithRole newUserRole = new CbesUserWithRole
+                        {
+                            CreateDate = DateTime.UtcNow,
+                            UpdateDate = DateTime.UtcNow,
+                            IsDeleted = false,
+                            CreateBy = userClaims,
+                            UpdateBy = userClaims,
+                            UserId = user.User.Id,
+                            RoleId = updateRoleUsers.Id,
+                        };
+
+                        oldRole.CbesUserWithRoles.Add(newUserRole);
                     }
                 }
-                else
-                {
-                    foreach (var u in updateRoleUsers.CbesRoleWithPermissions)
-                    {
-                        // ค้นหาผู้ใช้ที่มีอยู่ใน oldRole.CbesUserWithRoles
-                        CbesUserWithRole? existingUserRole = oldRole.CbesUserWithRoles.FirstOrDefault(ur => ur.UserId == u.Id);
 
-                        if (existingUserRole != null)
-                        {
-                            // ถ้ามีอยู่แล้วอัปเดต isDeleted
-                            existingUserRole.UpdateBy = userClaims;
-                            existingUserRole.UpdateDate = DateTime.UtcNow;
-                        }
-                        else
-                        {
-                            // ถ้าไม่มี สร้างใหม่
-                            CbesUserWithRole userRole = new CbesUserWithRole
-                            {
-                                UserId = u.Id,
-                                RoleId = oldRole.Id,
-                                IsDeleted = false,
-                                CreateBy = userClaims,
-                                UpdateBy = userClaims,
-                                CreateDate = DateTime.UtcNow,
-                                UpdateDate = DateTime.UtcNow,
-                            };
-
-                            oldRole.CbesUserWithRoles.Add(userRole);
-                        }
-                    }
-                }
 
                 _db.SaveChanges();
 
@@ -314,12 +388,21 @@ namespace CBEsApi.Controllers
                     Data = oldRole
                 });
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)
             {
-                return BadRequest(new Response
+                return StatusCode(500, new Response
                 {
                     Status = 500,
-                    Message = $"Error: {ex.Message}",
+                    Message = $"Database Update Error: {dbEx.Message}, Inner Exception: {dbEx.InnerException?.Message}",
+                    Data = null,
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = 500,
+                    Message = $"Internal Server Error: {ex.Message}, Inner Exception: {ex.InnerException?.Message}",
                     Data = null,
                 });
             }
