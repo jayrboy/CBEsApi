@@ -191,26 +191,36 @@ namespace CBEsApi.Models
             return role;
         }
 
-        public static CbesRole Update(CbesManagementContext db, CbesRole cbeRole)
+        public static CbesRole Update(CbesManagementContext db, CbesRole role)
         {
-            var existingRole = db.CbesRoles.Find(cbeRole.Id);
-
-            if (existingRole == null)
+            // Attach role to the context if not already attached
+            if (!db.CbesRoles.Local.Any(r => r.Id == role.Id))
             {
-                throw new ArgumentException("Role not found");
+                db.CbesRoles.Attach(role);
             }
 
-            // Update existingRole properties from cbeRole
-            existingRole.Name = cbeRole.Name;
-            existingRole.UpdateBy = cbeRole.UpdateBy;
-            existingRole.UpdateDate = DateTime.Now;
-            existingRole.IsDeleted = cbeRole.IsDeleted;
-            existingRole.IsLastDelete = cbeRole.IsLastDelete;
+            // Update role information
+            db.Entry(role).State = EntityState.Modified;
 
-            db.CbesRoles.Update(existingRole);
-            db.SaveChanges();
+            try
+            {
+                // Save changes to the database
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // Handle concurrency issues
+                // Log the exception or handle as needed
+                throw new Exception("Concurrency error occurred while updating role.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                // Handle other update errors
+                // Log the exception or handle as needed
+                throw new Exception("Error occurred while updating role.", ex);
+            }
 
-            return existingRole;
+            return role;
         }
     }
 }

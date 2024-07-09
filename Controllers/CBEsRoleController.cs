@@ -61,21 +61,64 @@ namespace CBEsApi.Controllers
         ///     POST /api/CBEsRole
         ///     
         ///     {
-        ///         "name": "บทบาททดสอบ",
-        ///         "createBy": 1,
-        ///         "updateBy": 2,
+        ///         "id": 0,
+        ///         "name": "เพิ่มบทบาททดสอบ",
         ///         "cbesRoleWithPermission": [
         ///             {
-        ///                 "isCheck": true,
-        ///                 "roleId": = 1,
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
         ///                 "permissionId: 1,
-        ///                 "permission": { "id": 1, "name": "กำหนดสิทธิ์การใช้งานระบบ และกลุ่มผู้ใช้งาน"}
+        ///                 "permission": { "id": 1, "name": "กำหนดสิทธิ์การใช้งานระบบ และกลุ่มผู้ใช้งาน" }
         ///             },
         ///             {
-        ///                 "isCheck": true,
-        ///                 "roleId": = 1,
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
         ///                 "permissionId: 2,
-        ///                 "permission": { "id": 2, "name": "ประวัติการใช้งาน"}
+        ///                 "permission": { "id": 2, "name": "ประวัติการใช้งาน" }
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
+        ///                 "permissionId: 3,
+        ///                 "permission": { "id": 3, "name": "จัดการหลักเกณฑ์ CBEs" }
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
+        ///                 "permissionId: 4,
+        ///                 "permission": { "id": 4, "name": "จัดการแผนวิสาหกิจ" }
+        ///             },
+        ///             {
+        ///                 "id": 0,"
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
+        ///                 "permissionId: 5,
+        ///                 "permission": { "id": 5, "name": "จัดการแผนแม่บท" }
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
+        ///                 "permissionId: 6,
+        ///                 "permission": { "id": 6, "name": "เป้าตัวชี้วัด-ผลตามตัวชี้วัดที่สำคัญขององ" }
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
+        ///                 "permissionId: 7,
+        ///                 "permission": { "id": 7, "name": "จัดการโครงการ" }
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "roleId": = 0,
+        ///                 "permissionId: 8,
+        ///                 "permission": { "id": 8, "name": "รายงานผลการดำเนินงานที่ได้รับ" }
         ///             }
         ///         ]
         ///     }
@@ -136,7 +179,7 @@ namespace CBEsApi.Controllers
         /// Update role with permissions.
         /// </summary>
         /// <remarks>
-        /// ตัวอย่างของคำขอ:
+        /// Example request:
         ///
         ///     PUT /api/CbesRole/PutRolePermission
         ///     {
@@ -169,10 +212,79 @@ namespace CBEsApi.Controllers
         ///                 "isDeleted": false,
         ///                 "roleId": 0,
         ///                 "permissionId": 2,
-        ///                 "permission": {
-        ///                     "id": 2,
-        ///                     "name": "ประวัติการใช้งาน"
-        ///                 },
+        ///                 "permission": { "id": 2, "name": "ประวัติการใช้งาน" },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 3,
+        ///                 "permission": { "id": 3, "name": "จัดการหลักเกณฑ์ CBEs" },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 4,
+        ///                 "permission": { "id": 4, "name": "จัดการแผนวิสาหกิจ" },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 5,
+        ///                 "permission": { "id": 5, "name": "จัดการแผนแม่บท" },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 6,
+        ///                 "permission": { "id": 6, "name": "เป้าตัวชี้วัด-ผลตามตัวชี้วัดที่สำคัญขององค์" },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 7,
+        ///                 "permission": { "id": 7, "name": "จัดการโครงการ" },
+        ///                 "createDate": "2024-07-05T09:53:46.533",
+        ///                 "updateDate": "2024-07-09T09:37:16.643",
+        ///                 "createBy": 1,
+        ///                 "updateBy": 1
+        ///             },
+        ///             {
+        ///                 "id": 0,
+        ///                 "isChecked": false,
+        ///                 "isDeleted": false,
+        ///                 "roleId": 0,
+        ///                 "permissionId": 8,
+        ///                 "permission": { "id": 8, "name": "รายงานผลการดำเนินงานที่ได้รับ" },
         ///                 "createDate": "2024-07-05T09:53:46.533",
         ///                 "updateDate": "2024-07-09T09:37:16.643",
         ///                 "createBy": 1,
@@ -222,8 +334,8 @@ namespace CBEsApi.Controllers
                     existingPermission.UpdateDate = DateTime.Now;
                     existingPermission.UpdateBy = userClaims;
 
-                    // Set RoleId for the permission (assuming existingRole.Id is correct)
-                    existingPermission.RoleId = existingRole.Id;
+                    // Update permissionId correctly
+                    existingPermission.PermissionId = permission.PermissionId;
                 }
             }
 
@@ -237,6 +349,7 @@ namespace CBEsApi.Controllers
                 Data = existingRole
             });
         }
+
 
         [HttpDelete("delete/{id}", Name = "DeleteRole")]
         public ActionResult DeleteRole(int id)
