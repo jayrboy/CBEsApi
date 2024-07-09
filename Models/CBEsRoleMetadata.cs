@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using CBEsApi.Data;
 using CBEsApi.Dtos.CBEsRole;
 
+
 namespace CBEsApi.Models
 {
     public class CbesRoleMetadata
@@ -126,11 +127,14 @@ namespace CBEsApi.Models
         }
 
         //  Delete ID
-        public static CbesRole Delete(CbesManagementContext db, int id)
+        public static CbesRole Delete(CbesManagementContext db, int id, int updateBy)
         {
             CbesRole cbe = GetRoleByIdAndUser(db, id);
+
             cbe.UpdateDate = DateTime.Now;
             cbe.IsDeleted = true;
+            cbe.UpdateBy = updateBy;
+
             db.Entry(cbe).State = EntityState.Modified;
             db.SaveChanges();
 
@@ -138,22 +142,26 @@ namespace CBEsApi.Models
         }
 
         //  Cancel Delete ID
-        public static CbesRole cancelDelete(CbesManagementContext db, int id)
+        public static CbesRole cancelDelete(CbesManagementContext db, int id, int updateBy)
         {
             CbesRole cbe = GetRoleByIdAndUser(db, id);
             cbe.UpdateDate = DateTime.Now;
             cbe.IsDeleted = false;
+            cbe.UpdateBy = updateBy;
+
             db.Entry(cbe).State = EntityState.Modified;
             db.SaveChanges();
 
             return cbe;
         }
         //  Last Delete ID
-        public static CbesRole lastDelete(CbesManagementContext db, int id)
+        public static CbesRole lastDelete(CbesManagementContext db, int id, int updateBy)
         {
             CbesRole cbe = GetRoleByIdAndUser(db, id);
             cbe.UpdateDate = DateTime.Now;
             cbe.IsLastDelete = true;
+            cbe.UpdateBy = updateBy;
+
             db.Entry(cbe).State = EntityState.Modified;
             db.SaveChanges();
 

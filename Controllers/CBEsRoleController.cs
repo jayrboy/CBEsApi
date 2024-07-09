@@ -231,9 +231,13 @@ namespace CBEsApi.Controllers
         [HttpDelete("delete/{id}", Name = "DeleteRole")]
         public ActionResult DeleteRole(int id)
         {
+            var userClaimsString = User.FindFirst("ID")?.Value;
+            int userClaims = Convert.ToInt32(userClaimsString);
+
             try
             {
-                CbesRole cbe = CbesRole.Delete(_db, id);
+
+                CbesRole cbe = CbesRole.Delete(_db, id, userClaims);
 
                 return Ok(new Response
                 {
@@ -424,9 +428,11 @@ namespace CBEsApi.Controllers
         [HttpPut("bin/CancelDelete", Name = "UpdateDeleteRole")]
         public ActionResult<Response> UpdateDeleteRole(RequestRoleID request)
         {
+            var userClaimsString = User.FindFirst("ID")?.Value;
+            int userClaims = Convert.ToInt32(userClaimsString);
             try
             {
-                CbesRole cbe = CbesRole.cancelDelete(_db, request.ID);
+                CbesRole cbe = CbesRole.cancelDelete(_db, request.ID, userClaims);
 
                 return Ok(new Response
                 {
@@ -450,9 +456,12 @@ namespace CBEsApi.Controllers
         [HttpDelete("bin/LastDelete/{id}", Name = "UpdateLastDeleteRole")]
         public ActionResult<Response> UpdateLastDeleteRole(int id)
         {
+            var userClaimsString = User.FindFirst("ID")?.Value;
+            int userClaims = Convert.ToInt32(userClaimsString);
+
             try
             {
-                CbesRole cbe = CbesRole.lastDelete(_db, id);
+                CbesRole cbe = CbesRole.lastDelete(_db, id, userClaims);
 
                 return Ok(new Response
                 {
