@@ -120,6 +120,16 @@ public class AuthorizationController : ControllerBase
     {
         CbesUser user = _db.CbesUsers.FirstOrDefault(doc => doc.Username == request.Username && doc.IsDeleted == false);
 
+        if (user == null)
+        {
+            return BadRequest(new Response
+            {
+                Status = 400,
+                Message = "Bad Request to Username",
+                Data = null
+            });
+        }
+
         // Check if user is locked out due to consecutive failed login attempts
         if (user.IsLog == false && user.LoginFailedCount >= 5)
         {
@@ -142,26 +152,10 @@ public class AuthorizationController : ControllerBase
             {
                 user.IsLog = true;
                 user.LoginFailedCount = 0;
-
                 _db.Entry(user).State = EntityState.Modified;
                 _db.SaveChanges();
             }
-
-
-            // Successful login
-            string bearerToken = GenerateToken(user);
-
-            return Ok(new Response
-            {
-                Status = 200,
-                Message = "Login Success",
-                Data = new
-                {
-                    token = bearerToken,
-                }
-            });
         }
-
 
         // If password is incorrect, increment login failed count and save changes
         if (user.Password != request.Password)
@@ -177,9 +171,36 @@ public class AuthorizationController : ControllerBase
 
             _db.Entry(user).State = EntityState.Modified;
             _db.SaveChanges();
+
+            return StatusCode(401, new Response
+            {
+                Status = 401,
+                Message = "Unauthorized to Password",
+                Data = null
+            });
         }
 
-        return BadRequest(new Response
+        // Successful login
+        if (user.IsLog == true && user.Password == request.Password)
+        {
+            string bearerToken = GenerateToken(user);
+            user.LoginFailedCount = 0;
+
+            _db.Entry(user).State = EntityState.Modified;
+            _db.SaveChanges();
+
+            return Ok(new Response
+            {
+                Status = 200,
+                Message = "Login Success",
+                Data = new
+                {
+                    token = bearerToken,
+                }
+            });
+        }
+
+        return StatusCode(401, new Response
         {
             Status = 401,
             Message = "Unauthorized to Password",
