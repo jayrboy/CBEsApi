@@ -145,14 +145,16 @@ namespace CBEsApi.Controllers
         /// <summary>
         /// Get All Bin
         /// </summary>
-        [HttpGet("bin", Name = "GetCBEsBin")]
-        public ActionResult<Response> GetRoleBin([FromBody] List<CbesRole> role)
+        [HttpGet("bin", Name = "GetAllCBEsBin")]
+        public ActionResult<Response> GetAllCBEsBin()
         {
+            List<CBEsDto> cbes = Cbe.GetAllBin(_db);
+
             return Ok(new Response
             {
                 Status = 200,
                 Message = "Success",
-                Data = role
+                Data = cbes
             });
         }
 
@@ -160,28 +162,56 @@ namespace CBEsApi.Controllers
         /// Cancel Delete Bin By ID
         /// </summary>
         [HttpPut("bin/CancelDelete/{id}", Name = "UpdateDeleteCBE")]
-        public ActionResult<Response> UpdateDeleteCBE(int id)
+        public ActionResult UpdateCancelDeleteCBE(int id)
         {
-            return Ok(new Response
+            try
             {
-                Status = 200,
-                Message = "Success",
-                Data = id
-            });
+                Cbe cbes = Cbe.CancelDelete(_db, id);
+
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbes
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = 500,
+                    Message = $"An error occurred: {ex.Message}",
+                    Data = null
+                });
+            }
         }
 
         /// <summary>
         /// Last Delete Bin By ID
         /// </summary>
         [HttpDelete("bin/LastDelete/{id}", Name = "UpdateLastDeleteCBE")]
-        public ActionResult<Response> UpdateLastDeleteCBE(int id)
+        public ActionResult UpdateLastDeleteCBE(int id)
         {
-            return Ok(new Response
+            try
             {
-                Status = 200,
-                Message = "Success",
-                Data = id
-            });
+                Cbe cbes = Cbe.LastDelete(_db, id);
+
+                return Ok(new Response
+                {
+                    Status = 200,
+                    Message = "Success",
+                    Data = cbes
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = 500,
+                    Message = $"An error occurred: {ex.Message}",
+                    Data = null
+                });
+            }
         }
     }
 }
