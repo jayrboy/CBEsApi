@@ -33,7 +33,8 @@ namespace CBEsApi.Models
                                             Username = u.Username,
                                             Fullname = u.Fullname,
                                             IsDeleted = u.IsDeleted,
-                                            PositionId = u.Position.Id
+                                            PositionId = u.PositionId,
+                                            UserWithRoleId = u.UserWithRoleId
                                         })
                                         .ToList();
             return users;

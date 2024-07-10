@@ -8,7 +8,8 @@ namespace CBEsApi.Dtos.CBEsRoleDto
         public string? Username { get; set; }
         public string? Fullname { get; set; }
         public bool? IsDeleted { get; set; }
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
+        public int? UserWithRoleId { get; set; }
 
     }
 }
