@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using CBEsApi.Models;
 using CBEsApi.Data;
+using CBEsApi.Dtos.CBEsPositionDto;
 
 namespace CBEsApi.Controllers
 {
@@ -14,10 +15,10 @@ namespace CBEsApi.Controllers
     {
         private CbesManagementContext _db = new CbesManagementContext();
 
-        [HttpGet(Name = "GetPositions")]
-        public ActionResult GetPositions()
+        [HttpGet(Name = "GetAllPositions")]
+        public ActionResult GetAllPositions()
         {
-            List<CbesPosition> positions = CbesPosition.GetAll(_db);
+            List<CBEsPositionDto> positions = CbesPosition.GetAll(_db);
 
             return Ok(new Response
             {
@@ -27,15 +28,20 @@ namespace CBEsApi.Controllers
             });
         }
 
-        [HttpGet("{id}", Name = "GetPosition")]
-        public ActionResult GetPosition(int id)
+        [HttpGet("{id}", Name = "GetPositionById")]
+        public ActionResult GetPositionById(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            CBEsPositionDto position = CbesPosition.GetById(_db, id);
 
-            CbesPosition position = CbesPosition.GetById(_db, id);
+            if (position == null || position.Id == 0)
+            {
+                return NotFound(new Response
+                {
+                    Status = 404,
+                    Message = "Position not found",
+                    Data = null
+                });
+            }
 
             return Ok(new Response
             {
@@ -43,6 +49,7 @@ namespace CBEsApi.Controllers
                 Message = "Success",
                 Data = position
             });
+
         }
 
     }

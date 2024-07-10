@@ -1,6 +1,4 @@
-using CBEsApi.Models;
-
-namespace CBEsApi.Dtos.CBEsRoleDto
+namespace CBEsApi.Dtos.CBEsPermissionDto
 {
     public class CbesPermissionDto
     {

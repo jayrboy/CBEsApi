@@ -1,6 +1,4 @@
-using CBEsApi.Models;
-
-namespace CBEsApi.Dtos.CBEsRoleDto
+namespace CBEsApi.Dtos.CBEsUserDto
 {
     public class CbesUserDto
     {
@@ -10,6 +8,5 @@ namespace CBEsApi.Dtos.CBEsRoleDto
         public bool? IsDeleted { get; set; }
         public int? PositionId { get; set; }
         public int? UserWithRoleId { get; set; }
-
     }
 }

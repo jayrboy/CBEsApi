@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace CBEsApi.Dtos.CBEsRoleDto
+using CBEsApi.Dtos.CBEsUserDto;
+
+namespace CBEsApi.Dtos.CBEsPositionDto
 {
-    public class CbesPositionDto
+    public class CBEsPositionDto
     {
         public int Id { get; set; }
 
@@ -23,5 +21,6 @@ namespace CBEsApi.Dtos.CBEsRoleDto
 
         public int? UpdateBy { get; set; }
 
+        public virtual List<CbesUserDto> CbesUsers { get; set; } = new List<CbesUserDto>();
     }
 }

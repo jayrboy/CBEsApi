@@ -1,3 +1,5 @@
+using CBEsApi.Dtos.CBEsPermissionDto;
+
 namespace CBEsApi.Dtos.CBEsRoleDto
 {
     public class CbesRoleWithPermissionDto
