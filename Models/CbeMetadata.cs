@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CBEsApi.Data;
+using CBEsApi.Dtos.CBEsDto;
 using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Models
@@ -12,15 +13,29 @@ namespace CBEsApi.Models
     [MetadataType(typeof(CbeMetadata))]
     public partial class Cbe
     {
-        public static List<Cbe> GetAll(CbesManagementContext db)
+        public static List<CBEsDto> GetAll(CbesManagementContext db)
         {
-            List<Cbe> cbes = db.Cbes.Where(q => q.IsDeleted != true).ToList();
+            List<CBEsDto> cbes = db.Cbes.Where(q => q.IsDeleted != true).Select(s => new CBEsDto
+            {
+                Id = s.Id,
+                ThaiName = s.ThaiName,
+                EngName = s.EngName,
+                ShortName = s.ShortName,
+                Detail = s.Detail,
+                IsActive = s.IsActive,
+                CreateDate = s.CreateDate,
+                UpdateDate = s.UpdateDate,
+                IsDeleted = s.IsDeleted,
+                IsLastDelete = s.IsLastDelete,
+                CreateBy = s.CreateBy,
+            }).ToList();
+
             return cbes;
         }
 
         public static Cbe GetById(CbesManagementContext db, int id)
         {
-            Cbe? cbe = db.Cbes.Where(q => q.Id == id && q.IsDeleted != true).FirstOrDefault();
+            Cbe? cbe = db.Cbes.Where(q => q.Id == id && q.IsDeleted != true).Include(q => q.CbesProcesses).FirstOrDefault();
             return cbe ?? new Cbe();
         }
 

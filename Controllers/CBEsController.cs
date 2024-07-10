@@ -1,4 +1,5 @@
 using CBEsApi.Data;
+using CBEsApi.Dtos.CBEsDto;
 using CBEsApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace CBEsApi.Controllers
         [HttpGet(Name = "GetCBEs")]
         public ActionResult GetCBEs()
         {
-            List<Cbe> cbes = Cbe.GetAll(_db);
+            List<CBEsDto> cbes = Cbe.GetAll(_db);
             return Ok(new Response
             {
                 Status = 200,
