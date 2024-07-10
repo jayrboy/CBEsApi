@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CBEsApi.Data;
-using CBEsApi.Dtos.CBEsRoleDto;
+using CBEsApi.Dtos.CBEsUserDto;
 using Microsoft.EntityFrameworkCore;
 
 namespace CBEsApi.Models
