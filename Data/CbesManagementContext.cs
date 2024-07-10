@@ -490,6 +490,7 @@ public partial class CbesManagementContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(200);
             entity.Property(e => e.ProcessHeaderId).HasColumnName("ProcessHeader_id");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.Weight).HasColumnType("decimal(18, 1)");
 
             entity.HasOne(d => d.Cbes).WithMany(p => p.CbesProcesses)
                 .HasForeignKey(d => d.CbesId)
@@ -802,6 +803,8 @@ public partial class CbesManagementContext : DbContext
         modelBuilder.Entity<CbesUser>(entity =>
         {
             entity.ToTable("CBEsUser");
+
+            entity.HasIndex(e => e.Username, "CBEsUser_Username_Unique").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");

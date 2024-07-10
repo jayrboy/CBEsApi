@@ -1,4 +1,7 @@
-﻿namespace CBEsApi.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace CBEsApi.Models;
 
 public partial class CbesRoleWithPermission
 {
