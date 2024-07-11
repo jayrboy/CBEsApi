@@ -120,27 +120,29 @@ namespace CBEsApi.Controllers
         [HttpGet("history", Name = "GetAllHistory")]
         public ActionResult<Response> GetAllHistory()
         {
-            List<CBEsLogDto> cbeHistory = CbeLog.GetAll(_db);
+            List<CBEsLogDto> cbeHistories = CbeLog.GetAll(_db);
 
             return Ok(new Response
             {
                 Status = 200,
                 Message = "Success",
-                Data = cbeHistory
+                Data = cbeHistories
             });
         }
 
         /// <summary>
         /// Get CBE History
         /// </summary>
-        [HttpGet("history/{id}", Name = "GetHistory")]
-        public ActionResult<Response> GetHistory(int id)
+        [HttpGet("history/{id}", Name = "GetByIdHistory")]
+        public ActionResult<Response> GetByIdHistory(int id)
         {
+            Cbe cbeHistory = Cbe.GetLogById(_db, id);
+
             return Ok(new Response
             {
                 Status = 200,
                 Message = "Success",
-                Data = id
+                Data = cbeHistory
             });
         }
 
