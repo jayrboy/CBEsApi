@@ -27,8 +27,6 @@ public partial class Cbe
 
     public int? CreateBy { get; set; }
 
-    public virtual ICollection<CbesLog> CbesLogs { get; set; } = new List<CbesLog>();
-
     public virtual ICollection<CbesPlanningLog> CbesPlanningLogs { get; set; } = new List<CbesPlanningLog>();
 
     public virtual ICollection<CbesPlanning> CbesPlannings { get; set; } = new List<CbesPlanning>();

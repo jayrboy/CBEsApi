@@ -93,7 +93,10 @@ namespace CBEsApi.Models
 
         public static Cbe GetLogById(CbesManagementContext db, int id)
         {
-            Cbe? cbe = db.Cbes.Where(q => q.Id == id).Include(q => q.CbesLogs).FirstOrDefault();
+            Cbe? cbe = db.Cbes.Where(q => q.Id == id)
+                              .Include(q => q.CbesLogs)
+                               .ThenInclude(q => q.CbesLogHeader)
+                              .FirstOrDefault();
             return cbe ?? new Cbe();
         }
     }

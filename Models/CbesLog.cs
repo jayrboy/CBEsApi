@@ -29,10 +29,6 @@ public partial class CbesLog
 
     public int? CbesLogHeaderId { get; set; }
 
-    public int? CbesId { get; set; }
-
-    public virtual Cbe? Cbes { get; set; }
-
     public virtual CbesLogHeader? CbesLogHeader { get; set; }
 
     public virtual ICollection<CbesLogHeader> CbesLogHeaders { get; set; } = new List<CbesLogHeader>();
