@@ -259,7 +259,7 @@ public partial class CbesManagementContext : DbContext
 
             entity.HasOne(d => d.CbesLogHeader).WithMany(p => p.CbesLogs)
                 .HasForeignKey(d => d.CbesLogHeaderId)
-                .HasConstraintName("FK_CBEs_Log_Header_id");
+                .HasConstraintName("FK_CBEs_LOG_CBEs_LOG_Header");
 
             entity.HasOne(d => d.UpdateByNavigation).WithMany(p => p.CbesLogs)
                 .HasForeignKey(d => d.UpdateBy)
@@ -273,15 +273,11 @@ public partial class CbesManagementContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("ID");
-            entity.Property(e => e.CbesLogId).HasColumnName("CBEsLog_id");
+            entity.Property(e => e.CbesId).HasColumnName("CBEs_id");
             entity.Property(e => e.CbesLogTypeId).HasColumnName("CBEsLog_Type_id");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Remark).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.CbesLog).WithMany(p => p.CbesLogHeaders)
-                .HasForeignKey(d => d.CbesLogId)
-                .HasConstraintName("FK_CBEs_Log_id");
 
             entity.HasOne(d => d.CbesLogType).WithMany(p => p.CbesLogHeaders)
                 .HasForeignKey(d => d.CbesLogTypeId)
@@ -518,6 +514,7 @@ public partial class CbesManagementContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.ProcessLogHeaderId).HasColumnName("Process_Log_Header_id");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.Weight).HasColumnType("decimal(18, 1)");
 
             entity.HasOne(d => d.CbesLog).WithMany(p => p.CbesProcessLogs)
                 .HasForeignKey(d => d.CbesLogId)

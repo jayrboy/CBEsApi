@@ -9,7 +9,7 @@ public partial class CbesProcessLog
 
     public string? Name { get; set; }
 
-    public int? Weight { get; set; }
+    public decimal? Weight { get; set; }
 
     public DateTime? CreateDate { get; set; }
 

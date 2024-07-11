@@ -19,11 +19,9 @@ public partial class CbesLogHeader
 
     public int? CbesLogTypeId { get; set; }
 
-    public int? CbesLogId { get; set; }
+    public int? CbesId { get; set; }
 
     public int? UpdateBy { get; set; }
-
-    public virtual CbesLog? CbesLog { get; set; }
 
     public virtual CbesLogType? CbesLogType { get; set; }
 
