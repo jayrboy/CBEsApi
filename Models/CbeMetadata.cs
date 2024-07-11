@@ -91,5 +91,25 @@ namespace CBEsApi.Models
             return cbe;
         }
 
+        public static List<CBEsDto> GetHistories(CbesManagementContext db)
+        {
+            List<CBEsDto> cbes = db.Cbes.Where(q => q.IsDeleted == true).Select(s => new CBEsDto
+            {
+                Id = s.Id,
+                ThaiName = s.ThaiName,
+                EngName = s.EngName,
+                ShortName = s.ShortName,
+                Detail = s.Detail,
+                IsActive = s.IsActive,
+                CreateDate = s.CreateDate,
+                UpdateDate = s.UpdateDate,
+                IsDeleted = s.IsDeleted,
+                IsLastDelete = s.IsLastDelete,
+                CreateBy = s.CreateBy,
+            }).ToList();
+
+            return cbes;
+        }
+
     }
 }
