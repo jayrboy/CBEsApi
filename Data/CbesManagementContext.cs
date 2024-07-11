@@ -249,6 +249,7 @@ public partial class CbesManagementContext : DbContext
             entity.ToTable("CBEs_LOG");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CbesId).HasColumnName("CBEs_id");
             entity.Property(e => e.CbesLogHeaderId).HasColumnName("CBEsLogHeader_id");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Detail).HasMaxLength(50);
@@ -256,6 +257,10 @@ public partial class CbesManagementContext : DbContext
             entity.Property(e => e.ShortName).HasMaxLength(50);
             entity.Property(e => e.ThaiName).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Cbes).WithMany(p => p.CbesLogs)
+                .HasForeignKey(d => d.CbesId)
+                .HasConstraintName("FK_CBEs_id");
 
             entity.HasOne(d => d.CbesLogHeader).WithMany(p => p.CbesLogs)
                 .HasForeignKey(d => d.CbesLogHeaderId)
