@@ -27,8 +27,6 @@ public partial class CbesProcess
 
     public virtual ICollection<CbesMaturity> CbesMaturities { get; set; } = new List<CbesMaturity>();
 
-    public virtual ICollection<CbesProcessLog> CbesProcessLogs { get; set; } = new List<CbesProcessLog>();
-
     public virtual ICollection<CbesProcessPlanning> CbesProcessPlannings { get; set; } = new List<CbesProcessPlanning>();
 
     public virtual ICollection<CbesProcessResult> CbesProcessResults { get; set; } = new List<CbesProcessResult>();

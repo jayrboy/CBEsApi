@@ -35,6 +35,8 @@ public partial class CbesUser
 
     public virtual ICollection<Cbe> Cbes { get; set; } = new List<Cbe>();
 
+    public virtual CbesLogHeader? CbesLogHeader { get; set; }
+
     public virtual ICollection<CbesLog> CbesLogs { get; set; } = new List<CbesLog>();
 
     public virtual ICollection<CbesPermission> CbesPermissionCreateByNavigations { get; set; } = new List<CbesPermission>();

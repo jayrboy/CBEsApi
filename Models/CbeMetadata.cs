@@ -91,13 +91,13 @@ namespace CBEsApi.Models
             return cbe;
         }
 
-        public static Cbe GetLogById(CbesManagementContext db, int id)
+        public static CbesLog GetLogById(CbesManagementContext db, int id)
         {
-            Cbe? cbe = db.Cbes.Where(q => q.Id == id)
-                              .Include(q => q.CbesLogs)
-                               .ThenInclude(q => q.CbesLogHeader)
+            CbesLog? cbe = db.CbesLogs.Where(q => q.Id == id)
+                              .Include(q => q.CbesLogHeaders)
+                               .ThenInclude(q => q.CbesLogType)
                               .FirstOrDefault();
-            return cbe ?? new Cbe();
+            return cbe ?? new CbesLog();
         }
     }
 }
