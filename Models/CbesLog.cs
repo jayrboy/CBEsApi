@@ -29,8 +29,6 @@ public partial class CbesLog
 
     public int? CbesLogHeaderId { get; set; }
 
-    public virtual CbesLogHeader? CbesLogHeader { get; set; }
-
     public virtual ICollection<CbesProcessLog> CbesProcessLogs { get; set; } = new List<CbesProcessLog>();
 
     public virtual CbesUser? UpdateByNavigation { get; set; }

@@ -35,7 +35,7 @@ public partial class CbesUser
 
     public virtual ICollection<Cbe> Cbes { get; set; } = new List<Cbe>();
 
-    public virtual CbesLogHeader? CbesLogHeader { get; set; }
+    public virtual ICollection<CbesLogHeader> CbesLogHeaders { get; set; } = new List<CbesLogHeader>();
 
     public virtual ICollection<CbesLog> CbesLogs { get; set; } = new List<CbesLog>();
 

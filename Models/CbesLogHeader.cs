@@ -25,9 +25,5 @@ public partial class CbesLogHeader
 
     public virtual CbesLogType? CbesLogType { get; set; }
 
-    public virtual ICollection<CbesLog> CbesLogs { get; set; } = new List<CbesLog>();
-
-    public virtual ICollection<CbesMaturityLog> CbesMaturityLogs { get; set; } = new List<CbesMaturityLog>();
-
-    public virtual CbesUser IdNavigation { get; set; } = null!;
+    public virtual CbesUser? UpdateByNavigation { get; set; }
 }

@@ -25,8 +25,6 @@ public partial class CbesMaturityLog
 
     public int? CbesLogHeaderId { get; set; }
 
-    public virtual CbesLogHeader? CbesLogHeader { get; set; }
-
     public virtual CbesMaturity? CbesMaturity { get; set; }
 
     public virtual CbesProcessLog? CbesProcessLog { get; set; }
