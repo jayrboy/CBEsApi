@@ -115,22 +115,6 @@ namespace CBEsApi.Controllers
         }
 
         /// <summary>
-        /// Get All CBEs History
-        /// </summary>
-        [HttpGet("history", Name = "GetAllHistory")]
-        public ActionResult<Response> GetAllHistory()
-        {
-            List<CBEsLogDto> cbeHistories = CbeLog.GetAll(_db);
-
-            return Ok(new Response
-            {
-                Status = 200,
-                Message = "Success",
-                Data = cbeHistories
-            });
-        }
-
-        /// <summary>
         /// Get CBE History
         /// </summary>
         [HttpGet("history/{id}", Name = "GetByIdHistory")]
