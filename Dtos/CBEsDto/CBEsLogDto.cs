@@ -1,7 +1,8 @@
+using CBEsApi.Models;
 
 namespace CBEsApi.Dtos.CBEsDto
 {
-    public class CBEsDto
+    public class CBEsLogDto
     {
         public int Id { get; set; }
 
@@ -14,8 +15,6 @@ namespace CBEsApi.Dtos.CBEsDto
         public string? Detail { get; set; }
         public int? Year { get; set; }
 
-        public bool? IsActive { get; set; }
-
         public DateTime? CreateDate { get; set; }
 
         public DateTime? UpdateDate { get; set; }
@@ -24,6 +23,9 @@ namespace CBEsApi.Dtos.CBEsDto
 
         public bool? IsLastDelete { get; set; }
 
-        public int? CreateBy { get; set; }
+        public int? UpdateBy { get; set; }
+
+        public int? CbesLogHeader { get; set; }
+
     }
 }
