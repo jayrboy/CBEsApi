@@ -120,7 +120,7 @@ namespace CBEsApi.Controllers
         [HttpGet("history/{id}", Name = "GetByIdHistory")]
         public ActionResult<Response> GetByIdHistory(int id)
         {
-            List<CbesLogHeader> cbeHistory = CbesLogHeader.GetHistory(_db, id);
+            List<CbesLogHeader> cbeHistory = CbesLogHeader.GetAll(_db, id);
 
             return Ok(new Response
             {

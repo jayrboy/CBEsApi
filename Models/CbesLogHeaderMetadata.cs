@@ -12,7 +12,7 @@ namespace CBEsApi.Models
     [MetadataType(typeof(CbesLogHeaderMetadata))]
     public partial class CbesLogHeader
     {
-        public static List<CbesLogHeader> GetHistory(CbesManagementContext db, int id)
+        public static List<CbesLogHeader> GetAll(CbesManagementContext db, int id)
         {
             List<CbesLogHeader>? cbe = db.CbesLogHeaders.Where(q => q.CbesId == id && q.IsDeleted != true)
                                                         .Include(q => q.CbesLogType)

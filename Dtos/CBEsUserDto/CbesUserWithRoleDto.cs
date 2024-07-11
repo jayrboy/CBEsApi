@@ -1,6 +1,4 @@
-using CBEsApi.Dtos.CBEsUserDto;
-
-namespace CBEsApi.Dtos.CBEsRoleDto
+namespace CBEsApi.Dtos.CBEsUserDto
 {
     public class CbesUserWithRoleDto
     {
