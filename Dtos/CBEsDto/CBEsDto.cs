@@ -1,3 +1,4 @@
+using CBEsApi.Models;
 
 namespace CBEsApi.Dtos.CBEsDto
 {
@@ -12,7 +13,6 @@ namespace CBEsApi.Dtos.CBEsDto
         public string? ShortName { get; set; }
 
         public string? Detail { get; set; }
-        public int? Year { get; set; }
 
         public bool? IsActive { get; set; }
 
@@ -25,5 +25,7 @@ namespace CBEsApi.Dtos.CBEsDto
         public bool? IsLastDelete { get; set; }
 
         public int? CreateBy { get; set; }
+
+        public List<CBEsProcessDto> CbesProcesses { get; set; }
     }
 }

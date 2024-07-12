@@ -34,7 +34,8 @@ namespace CBEsApi.Controllers
         [HttpGet("{id}", Name = "GetCBE")]
         public ActionResult GetCBE(int id)
         {
-            Cbe cbe = Cbe.GetById(_db, id);
+            CBEsDto cbe = Cbe.GetById(_db, id);
+
             return Ok(new Response
             {
                 Status = 200,
@@ -51,7 +52,7 @@ namespace CBEsApi.Controllers
         {
             try
             {
-                Cbe cbe = Cbe.Delete(_db, id);
+                CBEsDto cbe = Cbe.Delete(_db, id);
 
                 return Ok(new Response
                 {
@@ -154,7 +155,7 @@ namespace CBEsApi.Controllers
         {
             try
             {
-                Cbe cbes = Cbe.CancelDelete(_db, id);
+                CBEsDto cbes = Cbe.CancelDelete(_db, id);
 
                 return Ok(new Response
                 {
@@ -182,7 +183,7 @@ namespace CBEsApi.Controllers
         {
             try
             {
-                Cbe cbes = Cbe.LastDelete(_db, id);
+                CBEsDto cbes = Cbe.LastDelete(_db, id);
 
                 return Ok(new Response
                 {
